@@ -1,0 +1,4025 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHECKMXTFF - Công cụ hỗ trợ hàng đầu
+    </title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="author" content="Bảo Khanh - CHECKMXTFF">
+    <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="language" content="Vietnamese">
+    <meta name="geo.region" content="VN">
+    <meta name="geo.country" content="Vietnam">
+    <meta name="distribution" content="global">
+    <meta name="rating" content="general">
+    <meta name="revisit-after" content="1 days">
+
+    <!-- Brand & Business Info -->
+    <meta name="business:contact_data:street_address" content="Việt Nam">
+    <meta name="business:contact_data:locality" content="Hồ Chí Minh">
+    <meta name="business:contact_data:region" content="VN">
+    <meta name="business:contact_data:country_name" content="Vietnam">
+    <meta name="business:contact_data:website" content="index.html">
+
+    <!-- Alternative Names for Search -->
+    <meta name="alternate-name" content="CHECKMXTFF, bkhanh, Spam Log, Ban 7">
+    <meta name="application-name" content="CHECKMXTFF">
+
+    <!-- Search Engine Specific -->
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <meta name="bingbot" content="index, follow">
+    <meta name="slurp" content="index, follow">
+
+    <!-- Content Classification -->
+    <meta name="category" content="Gaming Tools, CHECKMXTFF">
+    <meta name="coverage" content="Worldwide">
+    <meta name="target" content="all">
+    <meta name="audience" content="gamers, free fire players, vietnam gamers">
+
+    <!-- Structured Data for Local Business -->
+
+    <link rel="stylesheet" href="/static/css/styles.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;500;600;700;800;900&amp;display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.0/firebase-database-compat.js"></script>
+
+    <!-- Prevent FOUC (Flash of Unstyled Content) -->
+    <style>
+        /* Hide content until page is fully loaded */
+        body {
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+
+        body.loaded {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        /* Show loading indicator */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 999999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+            color: white;
+        }
+
+        .loader-spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(139, 92, 246, 0.3);
+            border-top: 3px solid #8b5cf6;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        .loader-text {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            color: rgba(255, 255, 255, 0.9);
+            margin-bottom: 10px;
+        }
+
+        .loader-subtext {
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 14px;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        /* Auth Modal Styles */
+        .auth-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 10000;
+        }
+
+        .auth-modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .auth-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(5px);
+        }
+
+        .auth-content {
+            position: relative;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 20px;
+            padding: 40px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .auth-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .auth-header h2 {
+            color: #fff;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 28px;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .auth-close {
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 24px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+        .auth-close:hover {
+            color: #fff;
+        }
+
+        .auth-tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 12px;
+            background: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            border-bottom: 2px solid transparent;
+            margin-bottom: -2px;
+        }
+
+        .auth-tab:hover {
+            color: #fff;
+        }
+
+        .auth-tab.active {
+            color: #8b5cf6;
+            border-bottom-color: #8b5cf6;
+        }
+
+        .auth-form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .form-group label {
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 14px;
+            font-weight: 500;
+        }
+
+        .form-group input {
+            padding: 14px 16px;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 16px;
+            transition: all 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #8b5cf6;
+            box-shadow: 0 0 20px rgba(139, 92, 246, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .auth-submit {
+            padding: 16px;
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            border: none;
+            border-radius: 10px;
+            color: #fff;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .auth-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.4);
+        }
+
+        .auth-footer {
+            margin-top: 20px;
+            text-align: center;
+        }
+
+        .auth-footer p {
+            color: rgba(255, 255, 255, 0.6);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        /* Auth Buttons in Navbar */
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .btn-auth {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 8px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 13px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .btn-login {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-login:hover {
+            background: rgba(139, 92, 246, 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-register {
+            background: linear-gradient(135deg, #8b5cf6, #6366f1);
+            color: #fff;
+        }
+
+        .btn-register:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* User Info Display */
+        .user-info {
+            display: none;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .user-info.active {
+            display: flex;
+        }
+
+        .user-email {
+            color: rgba(255, 255, 255, 0.8);
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 14px;
+        }
+
+        .user-badge {
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            font-family: 'Be Vietnam Pro', sans-serif;
+        }
+
+        .user-badge.pro {
+            background: linear-gradient(135deg, #ffd700, #ffaa00);
+            color: #000;
+        }
+
+        .user-badge.free {
+            background: rgba(139, 92, 246, 0.2);
+            color: #8b5cf6;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-logout {
+            padding: 8px 16px;
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 8px;
+            font-family: 'Be Vietnam Pro', sans-serif;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-logout:hover {
+            background: rgba(239, 68, 68, 0.3);
+        }
+    </style>
+
+    <!-- SEO Links -->
+    <link rel="sitemap" type="application/xml" href="sitemap.html">
+    <link rel="alternate" type="application/rss+xml" title="FF tools new" href="rss.html">
+
+    <!-- Preload Critical Resources -->
+    <link rel="preload" href="./styles.css" as="style">
+    <link rel="preload" href="./script.js" as="script">
+
+    <!-- DNS Prefetch for External Resources -->
+    <link rel="dns-prefetch" href="https://fonts.googleapis.com/">
+    <link rel="dns-prefetch" href="https://cdnjs.cloudflare.com/">
+    <link rel="dns-prefetch" href="https://docs.google.com/">
+
+    <!-- Favicon and Icons -->
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
+    <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.html">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32x32.html">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicon-16x16.html">
+    <link rel="manifest" href="site.html">
+
+    <style>
+        .highlight-gptplus {
+            margin: 8px auto 18px;
+            padding: 10px 14px;
+            border-radius: 14px;
+
+            /* KHÔNG giới hạn thiết bị */
+            width: fit-content;
+            max-width: 100%;
+
+            background: linear-gradient(45deg, #ffe27a, #ffcf3a);
+            color: #4a3600;
+            font-size: 15.5px;
+            font-weight: 800;
+            text-align: center;
+
+            box-shadow: 0 0 10px rgba(255, 200, 0, 0.55);
+            animation: highlightBlink 1.4s infinite;
+        }
+
+        @keyframes highlightBlink {
+            0% {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            50% {
+                opacity: .92;
+                transform: scale(0.98);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+
+<style id="ui-v2-fix">
+:root { --ui-purple:#9b6cff; --ui-border:rgba(255,255,255,.12); --ui-card:rgba(255,255,255,.045); }
+html, body, button, input, textarea, select { font-family:"Be Vietnam Pro",sans-serif !important; }
+* { box-sizing:border-box; }
+
+/* Smaller brand so it no longer crowds the navbar */
+.navbar .logo { flex:0 1 auto; min-width:0; gap:8px !important; }
+.navbar .logo span { font-size:clamp(.88rem,3.5vw,1.08rem) !important; white-space:nowrap; }
+.navbar .logo i { font-size:1rem !important; }
+.nav-container { gap:10px; }
+
+/* Contact: wrap each group like the reference screenshot */
+#contact .container { width:min(1180px,calc(100% - 28px)); margin-inline:auto; }
+#contact .contact-main-grid { display:grid !important; grid-template-columns:1fr 1fr; gap:22px; align-items:stretch; }
+#contact .contact-info-section,
+#contact .community-info-section,
+#contact .payment-section {
+  min-width:0;
+  padding:26px !important;
+  border:1px solid var(--ui-border);
+  border-radius:26px;
+  background:linear-gradient(145deg,rgba(18,18,34,.88),rgba(8,8,20,.72));
+  box-shadow:0 18px 50px rgba(0,0,0,.24), inset 0 1px 0 rgba(255,255,255,.025);
+}
+#contact .payment-section { margin-top:22px; }
+#contact .contact-section-title {
+  margin:0 0 20px !important;
+  color:var(--ui-purple) !important;
+  font-size:clamp(1rem,2.4vw,1.25rem) !important;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+#contact .contact-cards-modern,
+#contact .community-cards-modern,
+#contact .payment-methods-grid { display:grid !important; grid-template-columns:1fr !important; gap:16px; }
+#contact .contact-card-modern,
+#contact .community-card-modern,
+#contact .payment-method-card {
+  width:100% !important; max-width:none !important; min-width:0;
+  border:1px solid rgba(255,255,255,.13) !important;
+  border-radius:22px !important;
+  background:var(--ui-card) !important;
+  overflow:hidden;
+}
+#contact .contact-card-content,
+#contact .community-card-content,
+#contact .payment-method-content { min-width:0; padding:22px !important; }
+#contact .contact-info, #contact .community-info, #contact .payment-method-info { min-width:0; overflow-wrap:anywhere; }
+#contact .contact-info h4, #contact .community-info h4, #contact .payment-method-info h4 { color:#fff !important; }
+#contact .contact-info p, #contact .community-info p { color:rgba(255,255,255,.66) !important; }
+#contact .contact-btn { color:var(--ui-purple) !important; font-weight:700; }
+#contact .contact-stats { display:grid !important; grid-template-columns:repeat(4,minmax(0,1fr)); gap:14px; }
+
+/* Auth: compact, readable, responsive */
+.auth-content { width:min(92vw,430px) !important; padding:28px !important; border-radius:22px !important; }
+.auth-header h2 { font-size:clamp(1.45rem,5vw,1.9rem) !important; }
+.auth-tabs { gap:6px !important; }
+.auth-tab { font-size:.95rem !important; }
+.form-group input { width:100%; min-width:0; }
+.auth-submit { min-height:50px; }
+
+/* Navbar auth buttons remain usable on narrow screens */
+@media (max-width:900px) {
+  #contact .contact-main-grid { grid-template-columns:1fr !important; }
+  #contact .contact-stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+@media (max-width:768px) {
+  .nav-container { padding-inline:12px !important; }
+  .navbar .logo span { font-size:.9rem !important; }
+  .auth-buttons { gap:6px !important; margin-left:auto; }
+  .btn-auth { padding:8px 10px !important; font-size:.76rem !important; white-space:nowrap; }
+  .btn-auth i { font-size:.8rem; }
+  .theme-switcher { flex:0 0 auto; }
+  #contact .contact-info-section,
+  #contact .community-info-section,
+  #contact .payment-section { padding:18px !important; border-radius:22px; }
+  #contact .contact-card-content,
+  #contact .community-card-content,
+  #contact .payment-method-content { padding:18px !important; }
+}
+@media (max-width:520px) {
+  .navbar .logo span { font-size:.78rem !important; }
+  .navbar .logo { gap:5px !important; }
+  .btn-auth { padding:7px 8px !important; font-size:.7rem !important; }
+  .btn-auth span { display:none; }
+  #contact .container { width:calc(100% - 24px); }
+  #contact .contact-info-section,
+  #contact .community-info-section,
+  #contact .payment-section { padding:14px !important; }
+  #contact .contact-card-content { display:flex; align-items:flex-start; gap:14px; }
+  #contact .community-card-content { display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:12px; }
+  #contact .contact-stats { grid-template-columns:repeat(2,minmax(0,1fr)) !important; }
+}
+</style>
+
+</head>
+
+<body><a href="cdn-cgi/contentddf3.html?id=YKZZvKOQqRoGayh7OV3Z1YAEmOlhZODtZg3hQsb5lRA-1767928078.373418-1.0.1.1-gAC7Tg2dL7TEvL2TEY7B_Q_x41DhK6w05wJrJ_iFe1Y"
+        aria-hidden="true" rel="nofollow noopener" style="display: none !important; visibility: hidden !important"></a>
+    <div id="dabilux-nuoi-than-widget" class="dabilux-nuoi-than-container">
+        <div class="dabilux-nuoi-than-popup-content">
+            <img src="static/images/qr.jpg" alt="QR Code" class="dabilux-nuoi-than-qr-image">
+            <p class="dabilux-nuoi-than-donate-text">Chủ web đói quá<br>xin được nuôi 🍜</p>
+        </div>
+        <div class="dabilux-nuoi-than-trigger-wrapper" onclick="dabiluxNuoiThanToggle()">
+            <img src="static/images/anxin.webp" alt="Support Me"
+                class="dabilux-nuoi-than-trigger-btn">
+            <span class="dabilux-nuoi-than-cta-text">Kích vào em đi</span>
+        </div>
+
+    </div>
+
+    <!-- Page Loader -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">CHECKMXTFF</div>
+            <div class="loader-subtext">Đang tải...</div>
+        </div>
+    </div>
+
+    <!-- Background Animation -->
+    <div class="bg-animation">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <!-- Music Player -->
+    <div id="musicPlayer" class="music-player hidden">
+        <div class="music-player-container">
+            <div class="music-visualizer">
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+                <div class="bar"></div>
+            </div>
+
+            <div class="music-info">
+                <div class="music-title">Tự Sự</div>
+                <div class="music-artist">Obito</div>
+            </div>
+
+            <div class="music-controls">
+                <button class="control-btn" id="playPauseBtn">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="control-btn" id="volumeBtn">
+                    <i class="fas fa-volume-up"></i>
+                </button>
+                <input type="range" id="volumeSlider" class="volume-slider" min="0" max="100" value="50">
+            </div>
+
+            <button class="close-music" id="closeMusicBtn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+
+        <audio id="backgroundMusic" loop>
+            <source src="/static/music/music.mp3" type="audio/mpeg">
+        </audio>
+    </div>
+
+    <!-- FX Canvas -->
+    <canvas id="fxCanvas" class="fx-canvas" aria-hidden="true"></canvas>
+
+    <!-- Grid + Noise overlays -->
+    <div class="bg-overlays">
+        <div class="bg-grid"></div>
+        <div class="bg-noise"></div>
+    </div>
+
+
+    <!-- Please Login Modal -->
+    <div id="pleaseLoginModal" class="auth-modal">
+        <div class="auth-overlay"></div>
+        <div class="auth-content" style="text-align: center;">
+            <div class="auth-header" style="justify-content: center;">
+                <h2 style="margin: 0;">⚠️ Cần đăng nhập</h2>
+            </div>
+            <div style="padding: 30px 0;">
+                <i class="fas fa-lock" style="font-size: 60px; color: #8b5cf6; margin-bottom: 20px;"></i>
+                <p
+                    style="color: rgba(255, 255, 255, 0.8); font-family: 'Be Vietnam Pro', sans-serif; font-size: 16px; margin-bottom: 30px;">
+                    Bạn chưa đăng nhập, vui lòng đăng nhập để sử dụng dịch vụ
+                </p>
+                <button class="auth-submit" id="pleaseLoginBtn" style="width: 100%;">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Đăng nhập ngay</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Auth Modal -->
+    <div id="authModal" class="auth-modal">
+        <div class="auth-overlay"></div>
+        <div class="auth-content">
+            <div class="auth-header">
+                <h2 id="authTitle">Đăng nhập</h2>
+                <button class="auth-close" id="authClose">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="auth-tabs">
+                <button class="auth-tab active" data-tab="login">Đăng nhập</button>
+                <button class="auth-tab" data-tab="register">Đăng ký</button>
+            </div>
+            <form id="authForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" required placeholder="Nhập email của bạn">
+                </div>
+                <div class="form-group">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" required placeholder="Nhập mật khẩu">
+                </div>
+                <div class="form-group" id="confirmPasswordGroup" style="display: none;">
+                    <label for="confirmPassword">Xác nhận mật khẩu</label>
+                    <input type="password" id="confirmPassword" placeholder="Nhập lại mật khẩu">
+                </div>
+                <button type="submit" class="auth-submit" id="authSubmit">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Đăng nhập</span>
+                </button>
+            </form>
+            <div class="auth-footer">
+                <p id="authMessage"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Important Notice Modal -->
+    <div id="adminNoticeModal" class="admin-notice-modal">
+        <div class="admin-notice-overlay"></div>
+        <div class="admin-notice-content">
+            <div class="admin-notice-header">
+                <div class="admin-notice-icon">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+                <h2>🚨 THÔNG BÁO TỪ ADMIN BẢO KHANH📢</h2>
+            </div>
+            <div class="admin-notice-body">
+
+
+                <div class="admin-notice-official">
+                    <!-- PHẦN NỔI BẬT NHẤT -->
+
+
+                    <p><strong>📢 Anh em nào cần hỗ trợ thì có thể tham gia box chat zalo...:</strong></p>
+                    <p>🌐 <a href="https://zalo.me/"
+                            target="_blank">zalo.me/</a></p>
+
+                    <p><strong>💼 Tuyển người làm phụ: </strong><a href="https://zalo.me/"
+                            target="_blank">zalo.me/</a></p>
+                </div>
+
+                <div class="admin-notice-contact">
+                    <p><strong>📞 LIÊN HỆ CHÍNH THỨC:</strong></p>
+                    <ul>
+                        <li>🔹 Zalo: <a href="https://zalo.me/0358173019" target="_blank"
+                                style="color: #22c55e; text-decoration: underline; font-weight: bold;">0358173019</a>
+                        </li>
+                        <li>🔹 Telegram Hỗ Trợ: <a href="t.me/@IIoveyouII" target="_blank"
+                                style="color: #3b82f6; text-decoration: underline; font-weight: bold;">t.me/@IIoveyouII</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="admin-notice-final">
+                    <p><strong>🎯 LƯU Ý:</strong> Chỉ mua hàng qua Website này và liên hệ Zalo/Telegram chính thức!</p>
+                    <p class="admin-signature">- Admin bảo khanh | CHECKMXTFF Team</p>
+                </div>
+            </div>
+            <div class="admin-notice-footer">
+                <button id="adminNoticeOk" class="admin-notice-btn">
+                    <i class="fas fa-check"></i>
+                    Tôi đã hiểu
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="navbar" data-nav>
+        <div class="nav-container">
+            <a href="/" class="logo">
+                <i class="fas fa-gamepad" style="color: #8b5cf6;"></i>
+                <span
+                    style="font-weight: 800; font-size: 1.2rem; background: linear-gradient(135deg, #a78bfa, #7c3aed); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text;">CHECKMXTFF</span>
+            </a>
+            <ul class="nav-menu" data-nav-menu>
+                <li><a href="#home" data-nav-link>Trang chủ</a></li>
+                <li><a href="#products" data-nav-link>Dịch vụ</a></li>
+                <li><a href="#features" data-nav-link>Tính năng</a></li>
+                <li><a href="#contact" data-nav-link>Liên hệ</a></li>
+            </ul>
+            <div class="auth-buttons" id="authButtons">
+                <a href="/auth" class="btn-auth btn-login">
+                    <i class="fas fa-sign-in-alt"></i>
+                    Đăng nhập
+                </a>
+                <a href="/register" class="btn-auth btn-register">
+                    <i class="fas fa-user-plus"></i>
+                    Đăng ký
+                </a>
+            </div>
+            <div class="user-info" id="userInfo">
+                <span class="user-email" id="userEmail"></span>
+                <span class="user-badge free" id="userBadge">Free</span>
+                <button class="btn-logout" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </button>
+            </div>
+            <button class="theme-switcher" id="themeToggle" aria-label="Đổi theme" title="Đổi theme">
+                <i class="fas fa-sun"></i>
+            </button>
+            <div class="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero reveal">
+        <div class="hero-content">
+            <div class="hero-text">
+                <h1 class="hero-title">
+                    <span class="gradient-text">Công Cụ Hỗ Trợ Free Fire</span>
+                </h1>
+
+                <p class="hero-description">
+                    Nền tảng công cụ hàng đầu cho việc bảo vệ tài khoản, tra cứu và tự động hoá Free Fire. An toàn, nhanh chóng và luôn cập nhật.
+                    <br><br>
+                    <span class="premium-highlight">
+                        <i class="fas fa-star"></i>
+                        <strong>Mới:</strong> Tài Khoản Premium Mở Khoá Toàn Bộ Dịch Vụ Và Nhiều Ưu Đãi Độc Quyền!
+                    </span>
+                </p>
+                <div class="hero-buttons">
+                    <a href="#products" class="btn btn-primary magnetic">
+                        <i class="fas fa-rocket"></i>
+                        Bắt Đầu
+                    </a>
+                    <a href="#contact" class="btn btn-secondary magnetic">
+                        <i class="fas fa-comments"></i>
+                        Liên Hệ Ngay
+                    </a>
+                </div>
+            </div>
+            <div class="hero-gallery-wrapper">
+                <div class="hero-gallery tilt" id="heroSlider" aria-label="Gallery dịch vụ">
+                    <div class="frame">
+                        <div class="slides">
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/1.jpg" alt="CHECKMXTFF Preview 1">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/2.jpg" alt="CHECKMXTFF Preview 2">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/3.jpg" alt="CHECKMXTFF Preview 3">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/4.jpg" alt="CHECKMXTFF Preview 4">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/5.jpg" alt="CHECKMXTFF Preview 5">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/6.jpg" alt="CHECKMXTFF Preview 6">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/7.jpg" alt="CHECKMXTFF Preview 7">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/8.jpg" alt="CHECKMXTFF Preview 8">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/9.jpg" alt="CHECKMXTFF Preview 9">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/10.jpg" alt="CHECKMXTFF Preview 10">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/11.jpg" alt="CHECKMXTFF Preview 11">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/12.jpg" alt="CHECKMXTFF Preview 12">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/13.jpg" alt="CHECKMXTFF Preview 13">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/14.jpg" alt="CHECKMXTFF Preview 14">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/15.jpg" alt="CHECKMXTFF Preview 15">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/16.jpg" alt="CHECKMXTFF Preview 16">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/17.jpg" alt="CHECKMXTFF Preview 17">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/18.jpg" alt="CHECKMXTFF Preview 18">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/19.jpg" alt="CHECKMXTFF Preview 19">
+                            </a>
+                            <a class="slide" href="#" target="_blank" rel="noopener">
+                                <img src="/static/images/20.jpg" alt="CHECKMXTFF Preview 20">
+                            </a>
+                        </div>
+                        <button class="gallery-btn prev magnetic" id="heroPrev" aria-label="Ảnh trước"><i
+                                class="fas fa-chevron-left"></i></button>
+                        <button class="gallery-btn next magnetic" id="heroNext" aria-label="Ảnh sau"><i
+                                class="fas fa-chevron-right"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about reveal">
+        <div class="container">
+            <h2 class="section-title">Về CHECKMXTFF</h2>
+            <div class="about-grid">
+                <div class="about-text">
+                    <h3>Đứng đầu Việt Nam về công cụ hỗ trợ Free Fire</h3>
+                    <p>
+                        <strong>CHECKMXTFF</strong> là thương hiệu hàng đầu Việt Nam chuyên cung cấp các công cụ hỗ
+                        trợ
+                        Free Fire chất lượng cao. Với hơn <strong>3 năm kinh nghiệm</strong> trong lĩnh vực, chúng tôi
+                        tự hào là
+                        đơn vị tiên phong tạo ra các dịch vụ <strong>CheckMXT, Ban 7, Spam Log</strong>
+                        và
+                        dịch vụ <strong>Bảo vệ tài khoản</strong> với độ an toàn tuyệt đối.
+                    </p>
+                    <p>
+                        <strong>CHECKMXTFF</strong> cam kết mang đến trải nghiệm tuyệt vời nhất từ dịch vụ bảo vệ tài
+                        khoản giúp tài khoản của bạn được an toàn gần như tuyệt đối và các công cụ hỗ trợ game mạnh mẽ.
+                    </p>
+                    <div class="stats">
+                        <div class="stat-item">
+                            <span class="stat-number">5+</span>
+                            <span class="stat-label">Năm kinh nghiệm</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Safe</span>
+                        </div>
+                        <div class="stat-item">
+                            <span class="stat-number">99.9%</span>
+                            <span class="stat-label">Hài lòng</span>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-features">
+                    <div class="feature-card">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>An toàn tuyệt đối</h4>
+                        <p>Công nghệ Safe 100%, bảo vệ tài khoản của bạn hoàn toàn</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-star"></i>
+                        <h4>Đứng đầu Việt Nam</h4>
+                        <p>Thương hiệu số 1 về công cụ hỗ trợ Free Fire tại Việt Nam</p>
+                    </div>
+                    <div class="feature-card">
+                        <i class="fas fa-cogs"></i>
+                        <h4>Công nghệ tiên tiến</h4>
+                        <p>Luôn cập nhật và phát triển theo xu hướng game mới nhất</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="products reveal">
+        <div class="container">
+            <h2 class="section-title">Dịch Vụ & Bảng Giá Tham Khảo</h2>
+
+            <div class="products-grid">
+                <!-- 1) Aimbot -->
+                <div class="product-card tilt">
+                    <div class="product-image">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+
+                    <div class="product-content">
+                        <h3>Công Cụ Free Fire</h3>
+                        <p>
+                            Chức năng như: Gắn / Gỡ Mail Khôi Phục, Spam Log, Dò mã bảo mật, Cực kì an toàn cho tài
+                            khoản
+                            và luôn cập nhật thường xuyên.
+                        </p>
+
+                        <div class="price-grid">
+                            <div class="price-item"><span>Key 1 ngày</span><strong>15.000 VND</strong></div>
+                            <div class="price-item"><span>Key 7 ngày</span><strong>70.000 VND</strong></div>
+                            <div class="price-item"><span>Key 15 ngày</span><strong>140.000 VND</strong></div>
+                            <div class="price-item permanent-key"><span>Key 30 ngày</span><strong>240.000 VND</strong>
+                            </div>
+                        </div>
+
+                        <div class="product-buttons">
+                            <a href="/tools" class="use-btn" data-require-auth="true">
+                                <i class="fas fa-rocket"></i>
+                                Sử dụng dịch vụ
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Features Section -->
+    <section id="features" class="features reveal">
+        <div class="container">
+            <h2 class="section-title">Chi tiết tính năng dịch vụ</h2>
+
+            <div class="features-grid">
+                <!-- Aimbot Aurora Features -->
+                <div class="feature-item tilt">
+                    <div class="feature-icon">
+                        <i class="fas fa-wrench"></i>
+                    </div>
+                    <h3>Công cụ Free Fire</h3>
+                    <p class="feature-subtitle">Tất cả tính năng</p>
+
+                    <div class="feature-list">
+                        <div class="feature-basic">
+                            <p><strong>Kiểm tra email khôi phục: </strong>Kiểm tra xem tài khoản có đang trong tình
+                                trạng bị gắn mail khôi phục hay không</p>
+
+                            <p><strong>Kiểm tra nền tảng liên kết: </strong>Kiểm tra tất cả liên kết của tài khoản bao
+                                gồm liên kết chính và liên kết phụ</p>
+
+                            <p><strong>Huỷ yêu cầu gắn mail khôi phục: </strong>Huỷ yêu cầu gắn mail khôi phục của tài
+                                khoản khi chưa hết 15 ngày</p>
+
+                            <p><strong>Vô hiệu hoá access token: </strong>Vô hiệu hoá access token khiến token đó không
+                                còn tác dụng</p>
+                        </div>
+
+                        <div class="feature-advanced" style="display: none;">
+                            <p><strong>Chuyển Đổi Token EAT Sang Access: </strong>Chuyển đổi token EAT sang Access từ
+                                trang web chính thống của Garena</p>
+
+                            <p><strong>Chuyển Đổi Token Eat Sang Jwt: </strong>Chuyển đổi token EAT sang JWT từ trang
+                                web chính thống của Garena</p>
+
+                            <p><strong>Chuyển Đổi Token Access Sang Jwt: </strong>Chuyển đổi token Access sang JWT từ
+                                trang web chính thống của Garena</p>
+
+                            <p><strong>Thêm Mail Khôi Phục: </strong>Thêm 1 Mail khôi phục cho tài khoản của bạn để giúp
+                                tăng cường bảo mật</p>
+
+                            <p><strong>Huỷ Liên Kết Email: </strong>Huỷ liên kết tài khoản của bạn khỏi email đã liên
+                                kết</p>
+
+                            <p><strong>Đổi Email Liên Kết: </strong>Thay đổi email liên kết hiện tại và thay bằng email
+                                mới</p>
+
+                            <p><strong>Tiểu Sử Dài: </strong>Đặt tiểu sử trong game của bạn dài hơn giới hạn cho phép
+                                giúp tiểu sử của bạn dài hơn có thể đạt tới 250 kí tự</p>
+
+                            <p><strong>Spam Log: </strong>Liên tục login để đá người chơi khác ra khỏi tài khoản</p>
+
+                            <p><strong>Ban 7 Ngày:</strong>Chèn 1 đoạn payload vào tài khoản khiến nó bị ban 7 ngày</p>
+                        </div>
+
+                        <button class="feature-toggle-btn" onclick="toggleFeatures(this)">
+                            <i class="fas fa-chevron-down"></i>
+                            <span>Xem thêm tính năng</span>
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+
+        <!-- Contact Section -->
+        <section id="contact" class="contact reveal">
+            <div class="container">
+                <div class="contact-hero">
+                    <h2 class="section-title">Kết nối với chúng tôi</h2>
+                    <p class="contact-hero-desc">Sẵn Sàng Hỗ Trợ Bạn 24/7 Với Đội Ngũ Chuyên Nghiệp Và Nhiệt Tình</p>
+                </div>
+
+                <div class="contact-main-grid">
+                    <!-- Contact Info Cards -->
+                    <div class="contact-info-section">
+                        <h3 class="contact-section-title">Liên hệ trực tiếp</h3>
+
+                        <div class="contact-cards-modern">
+                            <div class="contact-card-modern zalo-card tilt" data-tilt data-tilt-max="10">
+                                <div class="contact-card-bg"></div>
+                                <div class="contact-card-content">
+                                    <div class="contact-icon-modern">
+                                        <i class="fas fa-comments"></i>
+                                        <div class="icon-pulse zalo-pulse"></div>
+                                    </div>
+                                    <div class="contact-info">
+                                        <h4>Zalo Personal</h4>
+                                        <p>Chat trực tiếp, nhanh chóng, zalo: 0358173019</p>
+                                        <a href="https://zalo.me/0358173019" target="_blank"
+                                            class="contact-btn zalo-btn">
+                                            <span>Chat ngay</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="contact-card-modern telegram-card tilt" data-tilt data-tilt-max="10">
+                                <div class="contact-card-bg"></div>
+                                <div class="contact-card-content">
+                                    <div class="contact-icon-modern">
+                                        <i class="fab fa-telegram-plane"></i>
+                                        <div class="icon-pulse telegram-pulse"></div>
+                                    </div>
+                                    <div class="contact-info">
+                                        <h4>Zalo Admin</h4>
+                                        <p>Mua hàng vui lòng liên hệ để được hỗ trợ</p>
+                                        <a href="https://zalo.me/0358173019" target="_blank"
+                                            class="contact-btn zalo-btn">
+                                            <span>Liên hệ</span>
+                                            <i class="fas fa-arrow-right"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Community Section -->
+                    <div class="community-info-section">
+                        <h3 class="contact-section-title">Tham gia cộng đồng</h3>
+
+                        <div class="community-cards-modern">
+                            <a href="t.me/@IIoveyouII" target="_blank"
+                                class="community-card-modern zalo-community-modern tilt" data-tilt data-tilt-max="8">
+                                <div class="community-card-bg zalo-bg"></div>
+                                <div class="community-card-content">
+                                    <div class="community-icon-modern">
+                                        <img src="/static/images/zalo.png" alt="Zalo">
+                                    </div>
+                                    <div class="community-info">
+                                        <h4>Cộng đồng Discord</h4>
+                                        <p>100+ thành viên</p>
+                                        <span class="community-badge">Hỗ Trợ 24/7</span>
+                                    </div>
+                                    <div class="community-arrow">
+                                        <i class="fas fa-external-link-alt"></i>
+                                    </div>
+                                </div>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Payment Methods Section -->
+                <div class="payment-section">
+                    <h3 class="contact-section-title">Phương thức thanh toán</h3>
+                    <div class="payment-methods-grid">
+                        <div class="payment-method-card mb-card tilt" data-tilt data-tilt-max="8">
+                            <div class="payment-method-bg mb-bg"></div>
+                            <div class="payment-method-content">
+                                <div class="payment-method-icon">
+                                    <i class="fas fa-university"></i>
+                                </div>
+                                <div class="payment-method-info">
+                                    <h4>Vietcombank</h4>
+                                    <div class="account-info">
+                                        <div class="account-row">
+                                            <span class="account-label">Số TK:</span>
+                                            <span class="account-value">TOI BI GAY</span>
+                                            <button class="copy-btn" onclick="copyToClipboard('TOI BI GAY', this)">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                        <div class="account-row">
+                                            <span class="account-label">Chủ TK:</span>
+                                            <span class="account-value">TOI BI GAY</span>
+                                            <button class="copy-btn"
+                                                onclick="copyToClipboard('TOI BI GAY', this)">
+                                                <i class="fas fa-copy"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="qr-action">
+                                        <button class="qr-btn" onclick="showQRModal()">
+                                            <i class="fas fa-qrcode"></i>
+                                            Lấy mã QR
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Stats -->
+                <div class="contact-stats">
+                    <div class="stat-item-modern">
+                        <div class="stat-icon">
+                            <i class="fas fa-clock"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">24/7</span>
+                            <span class="stat-label">Hỗ trợ</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item-modern">
+                        <div class="stat-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">100+</span>
+                            <span class="stat-label">Thành viên</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item-modern">
+                        <div class="stat-icon">
+                            <i class="fas fa-bolt"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">
+                                5 phút</span>
+                            <span class="stat-label">Phản hồi</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-item-modern">
+                        <div class="stat-icon">
+                            <i class="fas fa-check-circle"></i>
+                        </div>
+                        <div class="stat-content">
+                            <span class="stat-number">100%</span>
+                            <span class="stat-label">Tin cậy</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="footer">
+            <div class="container">
+                <div class="footer-content">
+                    <div class="footer-logo">
+                        <i class="fas fa-gamepad"></i>
+                        <span>CHECKMXTFF</span>
+                    </div>
+                    <p>&copy; 2026 CHECKMXTFF - Admin  Bảo Khanh. All rights reserved.</p>
+                </div>
+            </div>
+        </footer>
+
+        <!-- QR Code Modal -->
+        <div id="qrModal" class="qr-modal">
+            <div class="qr-modal-overlay"></div>
+            <div class="qr-modal-content">
+                <div class="qr-modal-header">
+                    <h3>QR Code Vietcombank</h3>
+                    <button class="qr-modal-close" onclick="closeQRModal()">
+                        <i class="fas fa-times"></i>
+                    </button>
+                </div>
+                <div class="qr-modal-body">
+                    <div class="qr-display">
+                        <img src="/static/images/qr.png" alt="QR Code Vietcombank" id="qrImage">
+                        <div class="qr-info">
+                            <p><strong>TOI BI GAY</strong></p>
+                            <p>Vietcombank: TOI BI GAY</p>
+                        </div>
+                    </div>
+                    <div class="qr-actions">
+                        <button class="qr-action-btn use-btn" onclick="downloadQR()">
+                            <i class="fas fa-download"></i>
+                            Tải xuống
+                        </button>
+                        <button class="qr-action-btn copy-btn" onclick="copyQRImage()">
+                            <i class="fas fa-copy"></i>
+                            Copy ảnh
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <script src="/static/js/script.js" defer></script>
+
+        <!-- Page Load Handler -->
+        <script>
+            // Handle page loading to prevent FOUC
+            document.addEventListener('DOMContentLoaded', function () {
+                // Wait for all resources to load
+                window.addEventListener('load', function () {
+                    // Hide loader and show content
+                    const loader = document.getElementById('pageLoader');
+                    const body = document.body;
+
+                    // Add loaded class to body
+                    body.classList.add('loaded');
+
+                    // Hide loader with delay for smooth transition
+                    setTimeout(() => {
+                        loader.classList.add('hidden');
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 500);
+                    }, 300);
+                });
+
+                // Fallback: if load event doesn't fire within 3 seconds, show content anyway
+                setTimeout(() => {
+                    const loader = document.getElementById('pageLoader');
+                    const body = document.body;
+
+                    if (!body.classList.contains('loaded')) {
+                        body.classList.add('loaded');
+                        loader.classList.add('hidden');
+                        setTimeout(() => {
+                            loader.style.display = 'none';
+                        }, 500);
+                    }
+                }, 3000);
+            });
+        </script>
+
+        <!-- Feature Toggle Script -->
+        <script>
+            function toggleFeatures(button) {
+                const featureItem = button.closest('.feature-item');
+                const advancedFeatures = featureItem.querySelector('.feature-advanced');
+                const icon = button.querySelector('i');
+                const text = button.querySelector('span');
+
+                if (advancedFeatures.style.display === 'none') {
+                    advancedFeatures.style.display = 'block';
+                    icon.className = 'fas fa-chevron-up';
+                    text.textContent = 'Thu gọn';
+                    button.classList.add('expanded');
+                } else {
+                    advancedFeatures.style.display = 'none';
+                    icon.className = 'fas fa-chevron-down';
+                    text.textContent = 'Xem thêm tính năng';
+                    button.classList.remove('expanded');
+                }
+            }
+        </script>
+
+        <!-- Admin Notice Modal Script -->
+        <script>
+            // Admin Notice Modal - Always show on every visit
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('adminNoticeModal');
+                const okBtn = document.getElementById('adminNoticeOk');
+
+                // Show modal immediately when page loads
+                setTimeout(() => {
+                    modal.style.display = 'flex';
+                    modal.classList.add('show');
+                }, 500); // Small delay for better UX
+
+                // Close modal when OK button is clicked
+                okBtn.addEventListener('click', function () {
+                    modal.classList.add('hiding');
+                    setTimeout(() => {
+                        modal.style.display = 'none';
+                        modal.classList.remove('show', 'hiding');
+                        // Show music player and start playing
+                        showMusicPlayer();
+                    }, 300);
+                });
+
+                // Prevent closing modal with ESC or click outside
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && modal.style.display === 'flex') {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal || e.target.classList.contains('admin-notice-overlay')) {
+                        e.preventDefault();
+                        return false;
+                    }
+                });
+            });
+
+            // Music Player Functionality
+            function showMusicPlayer() {
+                const musicPlayer = document.getElementById('musicPlayer');
+                const audio = document.getElementById('backgroundMusic');
+
+                // Show music player with animation
+                musicPlayer.classList.remove('hidden');
+                setTimeout(() => {
+                    musicPlayer.classList.add('show');
+                }, 100);
+
+                // Try to play music (with user gesture requirement handling)
+                setTimeout(() => {
+                    playMusic();
+                }, 500);
+            }
+
+            function playMusic() {
+                const audio = document.getElementById('backgroundMusic');
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                const musicPlayer = document.getElementById('musicPlayer');
+
+                audio.volume = 0.5; // Set initial volume to 50%
+
+                audio.play().then(() => {
+                    playPauseBtn.innerHTML = '<i class="fas fa-pause"></i>';
+                    playPauseBtn.classList.add('playing');
+                    musicPlayer.classList.remove('paused');
+                }).catch((error) => {
+                    console.log('Auto-play prevented:', error);
+                    // Auto-play was prevented, user needs to click play manually
+                });
+            }
+
+            function pauseMusic() {
+                const audio = document.getElementById('backgroundMusic');
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                const musicPlayer = document.getElementById('musicPlayer');
+
+                audio.pause();
+                playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                playPauseBtn.classList.remove('playing');
+                musicPlayer.classList.add('paused');
+            }
+
+            // Initialize music player controls
+            document.addEventListener('DOMContentLoaded', function () {
+                const playPauseBtn = document.getElementById('playPauseBtn');
+                const volumeBtn = document.getElementById('volumeBtn');
+                const volumeSlider = document.getElementById('volumeSlider');
+                const closeMusicBtn = document.getElementById('closeMusicBtn');
+                const audio = document.getElementById('backgroundMusic');
+
+                // Play/Pause button
+                playPauseBtn.addEventListener('click', function () {
+                    if (audio.paused) {
+                        playMusic();
+                    } else {
+                        pauseMusic();
+                    }
+                });
+
+                // Volume control
+                volumeSlider.addEventListener('input', function () {
+                    audio.volume = this.value / 100;
+                    updateVolumeIcon();
+                });
+
+                // Volume button (mute/unmute)
+                volumeBtn.addEventListener('click', function () {
+                    if (audio.volume > 0) {
+                        audio.volume = 0;
+                        volumeSlider.value = 0;
+                    } else {
+                        audio.volume = 0.5;
+                        volumeSlider.value = 50;
+                    }
+                    updateVolumeIcon();
+                });
+
+                // Close music player
+                closeMusicBtn.addEventListener('click', function () {
+                    const musicPlayer = document.getElementById('musicPlayer');
+                    audio.pause();
+                    musicPlayer.classList.remove('show');
+                    setTimeout(() => {
+                        musicPlayer.classList.add('hidden');
+                    }, 400);
+                });
+
+                // Update volume icon based on volume level
+                function updateVolumeIcon() {
+                    const volumeIcon = volumeBtn.querySelector('i');
+                    if (audio.volume === 0) {
+                        volumeIcon.className = 'fas fa-volume-mute';
+                    } else if (audio.volume < 0.5) {
+                        volumeIcon.className = 'fas fa-volume-down';
+                    } else {
+                        volumeIcon.className = 'fas fa-volume-up';
+                    }
+                }
+
+                // Audio event listeners
+                audio.addEventListener('ended', function () {
+                    // Music ended, reset play button
+                    playPauseBtn.innerHTML = '<i class="fas fa-play"></i>';
+                    playPauseBtn.classList.remove('playing');
+                    document.getElementById('musicPlayer').classList.add('paused');
+                });
+
+                audio.addEventListener('loadstart', function () {
+                    console.log('Music loading...');
+                });
+
+                audio.addEventListener('canplay', function () {
+                    console.log('Music ready to play');
+                });
+
+                audio.addEventListener('error', function (e) {
+                    console.log('Music loading error:', e);
+                    // Hide music player if audio fails to load
+                    const musicPlayer = document.getElementById('musicPlayer');
+                    musicPlayer.classList.add('hidden');
+                });
+            });
+
+            // Copy to clipboard function
+            function copyToClipboard(text, button) {
+                navigator.clipboard.writeText(text).then(function () {
+                    // Show notification
+                    showCopyNotification();
+
+                    // Update button state
+                    const originalText = button.innerHTML;
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    button.classList.add('copied');
+
+                    // Reset button after 2 seconds
+                    setTimeout(() => {
+                        button.innerHTML = originalText;
+                        button.classList.remove('copied');
+                    }, 2000);
+                }).catch(function (err) {
+                    console.error('Could not copy text: ', err);
+                    alert('Không thể copy. Vui lòng copy thủ công: ' + text);
+                });
+            }
+
+            // Show copy notification
+            function showCopyNotification(message = 'Đã copy vào clipboard!') {
+                // Remove existing notification
+                const existingNotification = document.querySelector('.copy-notification');
+                if (existingNotification) {
+                    existingNotification.remove();
+                }
+
+                const notification = document.createElement('div');
+                notification.className = 'copy-notification';
+                notification.innerHTML = `
+                <i class="fas fa-check"></i>
+                <span>${message}</span>
+            `;
+
+                document.body.appendChild(notification);
+
+                // Show notification
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                // Hide notification after 3 seconds
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        if (notification.parentNode) {
+                            notification.remove();
+                        }
+                    }, 300);
+                }, 3000);
+            }
+
+            // QR Modal Functions
+            function showQRModal() {
+                const modal = document.getElementById('qrModal');
+                if (modal) {
+                    modal.style.display = 'flex';
+                    modal.classList.add('show');
+                    document.body.style.overflow = 'hidden';
+                }
+            }
+
+            function closeQRModal() {
+                const modal = document.getElementById('qrModal');
+                if (modal) {
+                    modal.classList.remove('show');
+                    modal.style.display = 'none';
+                    document.body.style.overflow = 'auto';
+                }
+            }
+
+            // Download QR Image
+            function downloadQR() {
+                const img = document.getElementById('qrImage');
+                const link = document.createElement('a');
+                link.download = 'qr-vietcombank.png';
+                link.href = img.src;
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+
+                showCopyNotification('Đã tải xuống QR code!');
+            }
+
+            // Copy QR Image to Clipboard
+            function copyQRImage() {
+                const img = document.getElementById('qrImage');
+
+                // Create canvas to convert image to blob
+                const canvas = document.createElement('canvas');
+                const ctx = canvas.getContext('2d');
+                canvas.width = img.naturalWidth;
+                canvas.height = img.naturalHeight;
+
+                img.onload = function () {
+                    ctx.drawImage(img, 0, 0);
+                    canvas.toBlob(function (blob) {
+                        try {
+                            const item = new ClipboardItem({ 'image/png': blob });
+                            navigator.clipboard.write([item]).then(function () {
+                                showCopyNotification('Đã copy QR code vào clipboard!');
+                            }).catch(function (err) {
+                                console.error('Could not copy image: ', err);
+                                alert('Không thể copy ảnh. Vui lòng tải xuống thay thế.');
+                            });
+                        } catch (err) {
+                            console.error('Clipboard API not supported: ', err);
+                            alert('Trình duyệt không hỗ trợ copy ảnh. Vui lòng tải xuống.');
+                        }
+                    });
+                };
+
+                // Trigger onload if image is already loaded
+                if (img.complete) {
+                    img.onload();
+                }
+            }
+
+            // Close modal when clicking overlay
+            document.addEventListener('DOMContentLoaded', function () {
+                const modal = document.getElementById('qrModal');
+                const overlay = modal.querySelector('.qr-modal-overlay');
+
+                overlay.addEventListener('click', function () {
+                    closeQRModal();
+                });
+
+                // Close modal with ESC key
+                document.addEventListener('keydown', function (e) {
+                    if (e.key === 'Escape' && modal.classList.contains('show')) {
+                        closeQRModal();
+                    }
+                });
+            });
+        </script>
+
+        <!-- Admin Notice Modal Styles -->
+        <style>
+            .admin-notice-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 999999;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Be Vietnam Pro', sans-serif;
+                opacity: 0;
+                transform: scale(0.8);
+                transition: all 0.3s ease;
+            }
+
+            .admin-notice-modal.show {
+                opacity: 1;
+                transform: scale(1);
+            }
+
+            .admin-notice-modal.hiding {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+
+            .admin-notice-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.9);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .admin-notice-content {
+                position: relative;
+                background: linear-gradient(135deg,
+                        rgba(255, 255, 255, 0.1) 0%,
+                        rgba(255, 255, 255, 0.05) 100%);
+                border: 2px solid rgba(139, 92, 246, 0.3);
+                border-radius: 20px;
+                padding: 2rem;
+                max-width: 600px;
+                width: 90%;
+                max-height: 80vh;
+                overflow-y: auto;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                box-shadow:
+                    0 25px 50px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+            }
+
+            .admin-notice-header {
+                text-align: center;
+                margin-bottom: 1.5rem;
+                border-bottom: 1px solid rgba(139, 92, 246, 0.3);
+                padding-bottom: 1rem;
+            }
+
+            .admin-notice-icon {
+                margin-bottom: 0.5rem;
+            }
+
+            .admin-notice-icon i {
+                font-size: 3rem;
+                color: #ff6b6b;
+                animation: pulse 2s infinite;
+            }
+
+            @keyframes pulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                    opacity: 1;
+                }
+
+                50% {
+                    transform: scale(1.1);
+                    opacity: 0.8;
+                }
+            }
+
+            .admin-notice-header h2 {
+                color: #fff;
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin: 0;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+                line-height: 1.3;
+            }
+
+            .admin-notice-body {
+                color: #fff;
+                line-height: 1.6;
+            }
+
+            .admin-notice-warning,
+            .admin-notice-official,
+            .admin-notice-contact,
+            .admin-notice-tips,
+            .admin-notice-final {
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+                border-radius: 10px;
+                border-left: 4px solid;
+            }
+
+            .admin-notice-warning {
+                background: rgba(255, 107, 107, 0.1);
+                border-left-color: #ff6b6b;
+            }
+
+            .admin-notice-official a {
+                color: #22c55e !important;
+                /* xanh lá nổi bật */
+                font-weight: 700;
+                text-decoration: none;
+                transition: 0.2s;
+            }
+
+            .admin-notice-official a:hover {
+                color: #4ade80 !important;
+                /* sáng hơn khi hover */
+                text-shadow: 0 0 6px rgba(34, 197, 94, 0.4);
+            }
+
+
+
+            .admin-notice-contact {
+                background: rgba(59, 130, 246, 0.1);
+                border-left-color: #3b82f6;
+            }
+
+            .admin-notice-tips {
+                background: rgba(245, 158, 11, 0.1);
+                border-left-color: #f59e0b;
+            }
+
+            .admin-notice-final {
+                background: rgba(139, 92, 246, 0.1);
+                border-left-color: #8b5cf6;
+            }
+
+            .admin-notice-contact a {
+                color: inherit !important;
+                text-decoration: underline !important;
+                transition: all 0.3s ease;
+            }
+
+            .admin-notice-contact a:hover {
+                opacity: 0.8;
+                text-shadow: 0 0 8px currentColor;
+            }
+
+            .admin-notice-usage {
+                background: rgba(34, 197, 94, 0.1);
+                border-left-color: #22c55e;
+                margin-bottom: 1.5rem;
+                padding: 1rem;
+                border-radius: 10px;
+                border-left: 4px solid #22c55e;
+            }
+
+            .official-url {
+                font-size: 1.2rem;
+                font-weight: 700;
+                color: #22c55e;
+                text-align: center;
+                background: rgba(34, 197, 94, 0.2);
+                padding: 0.5rem;
+                border-radius: 8px;
+                margin: 0.5rem 0;
+            }
+
+            .admin-notice-body ul {
+                margin: 0.5rem 0;
+                padding-left: 0;
+                list-style: none;
+            }
+
+            .admin-notice-body li {
+                margin: 0.3rem 0;
+                padding-left: 0;
+            }
+
+            .admin-signature {
+                text-align: right;
+                font-style: italic;
+                color: #a78bfa;
+                font-weight: 600;
+                margin-top: 1rem;
+            }
+
+            .admin-notice-footer {
+                text-align: center;
+                margin-top: 2rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(139, 92, 246, 0.3);
+            }
+
+            .admin-notice-btn {
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white;
+                border: none;
+                padding: 0.8rem 2rem;
+                border-radius: 50px;
+                font-size: 1rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 0 auto;
+            }
+
+            .admin-notice-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+                background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            }
+
+            .admin-notice-btn:active {
+                transform: translateY(0);
+            }
+
+            /* Mobile Responsive */
+            @media (max-width: 768px) {
+                .admin-notice-content {
+                    width: 95%;
+                    padding: 1.5rem;
+                    max-height: 85vh;
+                }
+
+                .admin-notice-header h2 {
+                    font-size: 1.1rem;
+                }
+
+                .admin-notice-icon i {
+                    font-size: 2.5rem;
+                }
+
+                .official-url {
+                    font-size: 1rem;
+                }
+            }
+
+            /* Scrollbar Styling */
+            .admin-notice-content::-webkit-scrollbar {
+                width: 6px;
+            }
+
+            .admin-notice-content::-webkit-scrollbar-track {
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 3px;
+            }
+
+            .admin-notice-content::-webkit-scrollbar-thumb {
+                background: rgba(139, 92, 246, 0.5);
+                border-radius: 3px;
+            }
+
+            .admin-notice-content::-webkit-scrollbar-thumb:hover {
+                background: rgba(139, 92, 246, 0.7);
+            }
+        </style>
+
+        <!-- Anti-Copy & Security Protection -->
+        <script>
+            // ===== ANTI-COPY & SECURITY PROTECTION =====
+
+            // Development mode - set to false when going live
+            const DEVELOPMENT_MODE = false; // Change to false for production
+
+            // Skip security if in development mode
+            if (!DEVELOPMENT_MODE) {
+
+                // 1. Disable right-click context menu
+                document.addEventListener('contextmenu', function (e) {
+                    e.preventDefault();
+                    showSecurityAlert('⚠️ Cảnh báo bảo mật', 'Chức năng chuột phải đã bị vô hiệu hóa để bảo vệ nội dung website.');
+                    return false;
+                });
+
+                // 2. Disable common keyboard shortcuts for copying/viewing source
+                document.addEventListener('keydown', function (e) {
+                    // Disable F12 (Developer Tools)
+                    if (e.key === 'F12') {
+                        e.preventDefault();
+                        showSecurityAlert('🔒 Bảo mật', 'Developer Tools đã bị chặn để bảo vệ mã nguồn.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+U (View Source)
+                    if (e.ctrlKey && e.key === 'u') {
+                        e.preventDefault();
+                        showSecurityAlert('🔒 Bảo mật', 'Xem mã nguồn đã bị chặn.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+Shift+I (Developer Tools)
+                    if (e.ctrlKey && e.shiftKey && e.key === 'I') {
+                        e.preventDefault();
+                        showSecurityAlert('🔒 Bảo mật', 'Developer Tools đã bị chặn.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+Shift+J (Console)
+                    if (e.ctrlKey && e.shiftKey && e.key === 'J') {
+                        e.preventDefault();
+                        showSecurityAlert('🔒 Bảo mật', 'Console đã bị chặn.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+Shift+C (Element Inspector)
+                    if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                        e.preventDefault();
+                        showSecurityAlert('🔒 Bảo mật', 'Element Inspector đã bị chặn.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+A (Select All)
+                    if (e.ctrlKey && e.key === 'a') {
+                        e.preventDefault();
+                        showSecurityAlert('⚠️ Cảnh báo', 'Chọn tất cả nội dung đã bị vô hiệu hóa.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+C (Copy)
+                    if (e.ctrlKey && e.key === 'c') {
+                        e.preventDefault();
+                        showSecurityAlert('⚠️ Cảnh báo', 'Sao chép nội dung đã bị vô hiệu hóa.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+V (Paste)
+                    if (e.ctrlKey && e.key === 'v') {
+                        e.preventDefault();
+                        return false;
+                    }
+
+                    // Disable Ctrl+X (Cut)
+                    if (e.ctrlKey && e.key === 'x') {
+                        e.preventDefault();
+                        showSecurityAlert('⚠️ Cảnh báo', 'Cắt nội dung đã bị vô hiệu hóa.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+S (Save)
+                    if (e.ctrlKey && e.key === 's') {
+                        e.preventDefault();
+                        showSecurityAlert('⚠️ Cảnh báo', 'Lưu trang đã bị vô hiệu hóa.');
+                        return false;
+                    }
+
+                    // Disable Ctrl+P (Print)
+                    if (e.ctrlKey && e.key === 'p') {
+                        e.preventDefault();
+                        showSecurityAlert('⚠️ Cảnh báo', 'In trang đã bị vô hiệu hóa.');
+                        return false;
+                    }
+                });
+
+                // 3. Disable text selection
+                document.addEventListener('selectstart', function (e) {
+                    e.preventDefault();
+                    return false;
+                });
+
+                // 4. Disable drag and drop
+                document.addEventListener('dragstart', function (e) {
+                    e.preventDefault();
+                    return false;
+                });
+
+                // 5. Detect Developer Tools opening (Only for this domain)
+                let devtools = {
+                    open: false,
+                    orientation: null
+                };
+
+
+                // More accurate threshold for different screen sizes
+                function getDevToolsThreshold() {
+                    const width = window.screen.width;
+                    const height = window.screen.height;
+
+                    // Adjust threshold based on screen size
+                    if (width <= 1366) return 200; // Smaller screens
+                    if (width <= 1920) return 250; // Standard screens  
+                    return 300; // Large screens
+                }
+
+                // More sophisticated detection (only for source code protection)
+                function checkDevTools() {
+                    const threshold = getDevToolsThreshold();
+                    const widthDiff = window.outerWidth - window.innerWidth;
+                    const heightDiff = window.outerHeight - window.innerHeight;
+
+                    // Only trigger if BOTH dimensions exceed threshold significantly
+                    const isDevToolsOpen = (widthDiff > threshold && heightDiff > threshold) ||
+                        (widthDiff > threshold * 1.5) ||
+                        (heightDiff > threshold * 1.5);
+
+                    // Additional check: window is too small (likely docked DevTools)
+                    const isTooSmall = window.innerWidth < 300 || window.innerHeight < 300;
+
+                    return isDevToolsOpen && !isTooSmall;
+                }
+
+                // Check every 3 seconds and only show warning (no reload)
+                setInterval(function () {
+                    const isOpen = checkDevTools();
+
+                    if (isOpen && !devtools.open) {
+                        devtools.open = true;
+                        // Add delay before showing alert to avoid false positives
+                        setTimeout(() => {
+                            if (checkDevTools()) { // Double check
+                                showSecurityAlert('� Thông báo bảo mật',
+                                    'Phát hiện Developer Tools đang mở. Mã nguồn được bảo vệ bản quyền bởi CHECKMXTFF.');
+                                // Removed auto-reload for better user experience
+                            }
+                        }, 1500);
+                    } else if (!isOpen) {
+                        devtools.open = false;
+                    }
+                }, 3000);
+
+                // 6. Console protection (only warn, don't block completely)
+                if (typeof console !== 'undefined') {
+                    const originalConsole = {
+                        log: console.log,
+                        warn: console.warn,
+                        error: console.error,
+                        info: console.info,
+                        debug: console.debug
+                    };
+
+                    // Override console methods to show protection warning
+                    console.log = console.warn = console.error = console.info = console.debug = function (...args) {
+                        // Still allow console for debugging but show warning
+                        originalConsole.log('%c🔒 CHECKMXTFF', 'color: #8b5cf6; font-weight: bold;', 'Mã nguồn được bảo vệ bản quyền');
+                        return originalConsole.log.apply(this, args);
+                    };
+                }
+
+                // 7. Security alert function
+                function showSecurityAlert(title, message) {
+                    // Remove existing alerts
+                    const existingAlerts = document.querySelectorAll('.security-alert');
+                    existingAlerts.forEach(alert => alert.remove());
+
+                    const alert = document.createElement('div');
+                    alert.className = 'security-alert';
+                    alert.innerHTML = `
+                <div class="security-alert-content">
+                    <div class="security-alert-header">
+                        <i class="fas fa-shield-alt"></i>
+                        <h4>${title}</h4>
+                    </div>
+                    <p>${message}</p>
+                    <div class="security-alert-footer">
+                        <small>© Bkhanh - CHECKMXTFF Security Protection</small>
+                    </div>
+                </div>
+            `;
+
+                    // Styles for security alert
+                    alert.style.cssText = `
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%);
+                background: linear-gradient(135deg, #1a1a2e, #16213e);
+                color: white;
+                padding: 2rem;
+                border-radius: 15px;
+                box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
+                z-index: 999999;
+                min-width: 400px;
+                max-width: 500px;
+                border: 2px solid #8b5cf6;
+                animation: securityAlertIn 0.3s ease-out;
+                font-family: 'Be Vietnam Pro', sans-serif;
+            `;
+
+                    // Add animation keyframes
+                    if (!document.querySelector('#security-alert-styles')) {
+                        const style = document.createElement('style');
+                        style.id = 'security-alert-styles';
+                        style.textContent = `
+                    @keyframes securityAlertIn {
+                        0% { opacity: 0; transform: translate(-50%, -50%) scale(0.8); }
+                        100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+                    }
+                    .security-alert-content {
+                        text-align: center;
+                    }
+                    .security-alert-header {
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        gap: 0.5rem;
+                        margin-bottom: 1rem;
+                        color: #8b5cf6;
+                    }
+                    .security-alert-header i {
+                        font-size: 1.5rem;
+                    }
+                    .security-alert-header h4 {
+                        margin: 0;
+                        font-size: 1.2rem;
+                        font-weight: 700;
+                    }
+                    .security-alert-content p {
+                        margin: 0 0 1rem 0;
+                        line-height: 1.6;
+                        color: #e2e8f0;
+                    }
+                    .security-alert-footer {
+                        border-top: 1px solid rgba(139, 92, 246, 0.3);
+                        padding-top: 1rem;
+                        margin-top: 1rem;
+                    }
+                    .security-alert-footer small {
+                        color: #8b5cf6;
+                        font-weight: 500;
+                    }
+                `;
+                        document.head.appendChild(style);
+                    }
+
+                    document.body.appendChild(alert);
+
+                    // Auto remove after 3 seconds
+                    setTimeout(() => {
+                        if (alert.parentNode) {
+                            alert.style.animation = 'securityAlertIn 0.3s ease-out reverse';
+                            setTimeout(() => alert.remove(), 300);
+                        }
+                    }, 3000);
+                }
+
+                // 8. Disable image saving
+                document.addEventListener('DOMContentLoaded', function () {
+                    const images = document.querySelectorAll('img');
+                    images.forEach(img => {
+                        img.addEventListener('contextmenu', function (e) {
+                            e.preventDefault();
+                            return false;
+                        });
+
+                        img.addEventListener('dragstart', function (e) {
+                            e.preventDefault();
+                            return false;
+                        });
+
+                        // Add pointer-events: none to prevent saving
+                        img.style.pointerEvents = 'none';
+                        img.style.userSelect = 'none';
+                        img.style.webkitUserSelect = 'none';
+                        img.style.mozUserSelect = 'none';
+                        img.style.msUserSelect = 'none';
+                    });
+                });
+
+                // 9. Disable zoom functionality
+                document.addEventListener('wheel', function (e) {
+                    if (e.ctrlKey) {
+                        e.preventDefault();
+                        return false;
+                    }
+                }, { passive: false });
+
+                // 10. Monitor for suspicious activity (reduced sensitivity)
+                let suspiciousActivity = 0;
+                const maxSuspiciousActivity = 15; // Increased threshold
+
+                function trackSuspiciousActivity() {
+                    suspiciousActivity++;
+                    if (suspiciousActivity >= maxSuspiciousActivity) {
+                        showSecurityAlert('⚠️ Nhiều hoạt động copy',
+                            'Phát hiện nhiều lần cố gắng copy nội dung. Nội dung được bảo vệ bản quyền.');
+                        // Removed auto-reload
+                        suspiciousActivity = 0; // Reset counter
+                    }
+                }
+
+                // 11. Anti-bot protection
+                let mouseMovements = 0;
+                let keyPresses = 0;
+
+                document.addEventListener('mousemove', function () {
+                    mouseMovements++;
+                });
+
+                document.addEventListener('keypress', function () {
+                    keyPresses++;
+                });
+
+                // Check for bot behavior
+                setTimeout(function () {
+                    if (mouseMovements === 0 && keyPresses === 0) {
+                        console.log('Possible bot detected');
+                        // Could implement additional bot protection here
+                    }
+                }, 10000);
+
+                // 12. Protect against iframe embedding
+                if (window.top !== window.self) {
+                    window.top.location = window.self.location;
+                }
+
+                // 13. Clear clipboard on copy attempts (gentle protection)
+                document.addEventListener('copy', function (e) {
+                    e.clipboardData.setData('text/plain', '© bkhanh - CHECKMXTFF - Nội dung được bảo vệ bản quyền');
+                    e.preventDefault();
+                    showSecurityAlert('📋 Bảo vệ nội dung', 'Nội dung CHECKMXTFF được bảo vệ bản quyền. Thông tin liên hệ đã được copy thay thế.');
+                    trackSuspiciousActivity();
+                });
+
+                // 14. Obfuscate text content (make it harder to scrape)
+                function obfuscateText() {
+                    const textNodes = document.createTreeWalker(
+                        document.body,
+                        NodeFilter.SHOW_TEXT,
+                        null,
+                        false
+                    );
+
+                    // This is a simple example - in production you'd want more sophisticated obfuscation
+                    // For now, we'll just add some hidden characters that don't affect display
+                }
+
+                // 15. Gentle welcome message for legitimate users
+                setTimeout(function () {
+                    if (mouseMovements > 10 || keyPresses > 0) {
+                        // User seems legitimate, show subtle branding
+                        if (!document.querySelector('.fftools-watermark')) {
+                            const watermark = document.createElement('div');
+                            watermark.className = 'fftools-watermark';
+                            watermark.innerHTML = '© CHECKMXTFF';
+                            watermark.style.cssText = `
+                        position: fixed;
+                        bottom: 10px;
+                        right: 10px;
+                        color: rgba(139, 92, 246, 0.3);
+                        font-size: 10px;
+                        z-index: 1000;
+                        pointer-events: none;
+                        font-family: 'Be Vietnam Pro', sans-serif;
+                    `;
+                            document.body.appendChild(watermark);
+                        }
+                    }
+                }, 8000);
+
+            } // End of security protection block
+
+            // Show development notice if in dev mode
+            if (DEVELOPMENT_MODE) {
+                console.log('%c🔧 DEVELOPMENT MODE', 'color: #ff6b6b; font-size: 16px; font-weight: bold;');
+                console.log('%cSecurity features disabled for development', 'color: #ffa500; font-size: 12px;');
+                console.log('%cSet DEVELOPMENT_MODE = false for production', 'color: #ffa500; font-size: 12px;');
+
+                // Show subtle dev indicator
+                setTimeout(() => {
+                    const devIndicator = document.createElement('div');
+                    devIndicator.innerHTML = '🔧 DEV';
+                    devIndicator.style.cssText = `
+                    position: fixed;
+                    top: 10px;
+                    right: 10px;
+                    background: rgba(255, 107, 107, 0.9);
+                    color: white;
+                    padding: 5px 10px;
+                    border-radius: 15px;
+                    font-size: 12px;
+                    font-weight: bold;
+                    z-index: 99999;
+                    pointer-events: none;
+                `;
+                    document.body.appendChild(devIndicator);
+                }, 1000);
+            }
+
+        </script>
+
+        <!-- Additional CSS for security styling -->
+        <style>
+            /* Disable text selection globally */
+            * {
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+                user-select: none;
+                -webkit-touch-callout: none;
+                -webkit-tap-highlight-color: transparent;
+            }
+
+            /* Allow text selection only for input fields and editable content */
+            input,
+            textarea,
+            [contenteditable="true"] {
+                -webkit-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
+
+            /* Disable image dragging */
+            img {
+                -webkit-user-drag: none;
+                -khtml-user-drag: none;
+                -moz-user-drag: none;
+                -o-user-drag: none;
+                pointer-events: none;
+                user-select: none;
+                -webkit-user-select: none;
+                -moz-user-select: none;
+                -ms-user-select: none;
+            }
+
+            /* Make images unselectable */
+            img::selection {
+                background: transparent;
+            }
+
+            img::-moz-selection {
+                background: transparent;
+            }
+
+            /* Disable outline on focus for security elements */
+            .security-alert * {
+                outline: none !important;
+            }
+
+            /* Add subtle watermark */
+            body::before {
+                content: "© Bkhanh - CHECKMXTFF";
+                position: fixed;
+                top: 50%;
+                left: 50%;
+                transform: translate(-50%, -50%) rotate(-45deg);
+                font-size: 8rem;
+                color: rgba(139, 92, 246, 0.02);
+                z-index: -1;
+                pointer-events: none;
+                font-weight: bold;
+                white-space: nowrap;
+            }
+
+            /* Feature Toggle Button Styles */
+            .feature-toggle-btn {
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white;
+                border: none;
+                padding: 0.7rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 1rem auto 0;
+                font-family: 'Be Vietnam Pro', sans-serif;
+                -webkit-user-select: text;
+                -moz-user-select: text;
+                -ms-user-select: text;
+                user-select: text;
+            }
+
+            .feature-toggle-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+                background: linear-gradient(135deg, #7c3aed, #6d28d9);
+            }
+
+            .feature-toggle-btn:active {
+                transform: translateY(0);
+            }
+
+            .feature-toggle-btn.expanded {
+                background: linear-gradient(135deg, #ef4444, #dc2626);
+                box-shadow: 0 4px 15px rgba(239, 68, 68, 0.3);
+            }
+
+            .feature-toggle-btn.expanded:hover {
+                background: linear-gradient(135deg, #dc2626, #b91c1c);
+                box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+            }
+
+            .feature-advanced {
+                margin-top: 1rem;
+                padding-top: 1rem;
+                border-top: 1px solid rgba(139, 92, 246, 0.2);
+                animation: fadeIn 0.3s ease-out;
+            }
+
+            @keyframes fadeIn {
+                0% {
+                    opacity: 0;
+                    transform: translateY(-10px);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .highlight {
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white;
+                padding: 0.1rem 0.4rem;
+                border-radius: 12px;
+                font-weight: 600;
+                font-size: 0.9em;
+                box-shadow: 0 2px 6px rgba(139, 92, 246, 0.25);
+            }
+
+            /* Music Player Styles */
+            .music-player {
+                position: fixed;
+                bottom: 20px;
+                right: 20px;
+                z-index: 99999;
+                transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+                transform: translateY(100px) scale(0.8);
+                opacity: 0;
+            }
+
+            .music-player.show {
+                transform: translateY(0) scale(1);
+                opacity: 1;
+            }
+
+            .music-player.hidden {
+                display: none;
+            }
+
+            .music-player-container {
+                background: rgba(255, 255, 255, 0.08);
+                backdrop-filter: blur(15px);
+                -webkit-backdrop-filter: blur(15px);
+                border: 1px solid rgba(255, 255, 255, 0.15);
+                border-radius: 16px;
+                padding: 12px;
+                min-width: 200px;
+                max-width: 220px;
+                box-shadow:
+                    0 8px 32px rgba(0, 0, 0, 0.12),
+                    0 0 0 1px rgba(255, 255, 255, 0.05) inset;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .music-player-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg,
+                        rgba(139, 92, 246, 0.03) 0%,
+                        rgba(124, 58, 237, 0.05) 100%);
+                border-radius: 16px;
+                pointer-events: none;
+            }
+
+            .music-visualizer {
+                display: flex;
+                align-items: end;
+                gap: 2px;
+                height: 20px;
+                margin-bottom: 8px;
+                justify-content: center;
+            }
+
+            .music-visualizer .bar {
+                width: 2px;
+                background: linear-gradient(to top, rgba(139, 92, 246, 0.8), rgba(139, 92, 246, 0.4));
+                border-radius: 1px;
+                animation: musicBar 1s ease-in-out infinite alternate;
+            }
+
+            .music-visualizer .bar:nth-child(1) {
+                animation-delay: 0s;
+            }
+
+            .music-visualizer .bar:nth-child(2) {
+                animation-delay: 0.1s;
+            }
+
+            .music-visualizer .bar:nth-child(3) {
+                animation-delay: 0.2s;
+            }
+
+            .music-visualizer .bar:nth-child(4) {
+                animation-delay: 0.3s;
+            }
+
+            .music-visualizer .bar:nth-child(5) {
+                animation-delay: 0.4s;
+            }
+
+            @keyframes musicBar {
+                0% {
+                    height: 3px;
+                    opacity: 0.4;
+                }
+
+                100% {
+                    height: 16px;
+                    opacity: 0.8;
+                }
+            }
+
+            .music-info {
+                text-align: center;
+                margin-bottom: 10px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .music-title {
+                color: rgba(255, 255, 255, 0.9);
+                font-size: 12px;
+                font-weight: 600;
+                margin-bottom: 2px;
+                line-height: 1.2;
+            }
+
+            .music-artist {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 10px;
+                font-weight: 400;
+            }
+
+            .music-controls {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 8px;
+                position: relative;
+                z-index: 2;
+            }
+
+            .control-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                border-radius: 50%;
+                width: 28px;
+                height: 28px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: rgba(255, 255, 255, 0.8);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 11px;
+            }
+
+            .control-btn:hover {
+                background: rgba(255, 255, 255, 0.15);
+                color: rgba(255, 255, 255, 0.95);
+                transform: scale(1.05);
+            }
+
+            .control-btn:active {
+                transform: scale(0.98);
+            }
+
+            .control-btn.playing {
+                background: rgba(139, 92, 246, 0.2);
+                color: rgba(255, 255, 255, 0.95);
+            }
+
+            .volume-slider {
+                width: 50px;
+                height: 2px;
+                background: rgba(255, 255, 255, 0.2);
+                border-radius: 1px;
+                outline: none;
+                -webkit-appearance: none;
+                appearance: none;
+            }
+
+            .volume-slider::-webkit-slider-thumb {
+                -webkit-appearance: none;
+                appearance: none;
+                width: 8px;
+                height: 8px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                cursor: pointer;
+            }
+
+            .volume-slider::-moz-range-thumb {
+                width: 8px;
+                height: 8px;
+                background: rgba(255, 255, 255, 0.9);
+                border-radius: 50%;
+                cursor: pointer;
+                border: none;
+            }
+
+            .close-music {
+                position: absolute;
+                top: 6px;
+                right: 6px;
+                background: rgba(255, 255, 255, 0.1);
+                border: none;
+                border-radius: 50%;
+                width: 18px;
+                height: 18px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: rgba(255, 255, 255, 0.6);
+                cursor: pointer;
+                transition: all 0.2s ease;
+                font-size: 8px;
+                z-index: 3;
+            }
+
+            .close-music:hover {
+                background: rgba(255, 107, 107, 0.2);
+                color: rgba(255, 255, 255, 0.9);
+            }
+
+            /* Mobile Responsive */
+            @media (max-width: 768px) {
+                .music-player {
+                    bottom: 15px;
+                    right: 15px;
+                }
+
+                .music-player-container {
+                    min-width: 180px;
+                    max-width: 200px;
+                    padding: 10px;
+                }
+
+                .music-title {
+                    font-size: 11px;
+                }
+
+                .music-artist {
+                    font-size: 9px;
+                }
+
+                .control-btn {
+                    width: 24px;
+                    height: 24px;
+                    font-size: 10px;
+                }
+
+                .volume-slider {
+                    width: 40px;
+                }
+
+                .close-music {
+                    width: 16px;
+                    height: 16px;
+                    font-size: 7px;
+                }
+            }
+
+            /* Paused state animation */
+            .music-player.paused .music-visualizer .bar {
+                animation-play-state: paused;
+                height: 4px;
+                opacity: 0.2;
+            }
+
+            /* Payment Methods Styles */
+            .payment-section {
+                margin-top: 3rem;
+            }
+
+            .payment-methods-grid {
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+                gap: 1.5rem;
+                margin-top: 1.5rem;
+            }
+
+            .payment-method-card {
+                position: relative;
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+                overflow: hidden;
+            }
+
+            .payment-method-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                border-radius: 20px;
+                pointer-events: none;
+            }
+
+            .mb-card::before {
+                background: linear-gradient(135deg,
+                        rgba(34, 197, 94, 0.1) 0%,
+                        rgba(22, 163, 74, 0.05) 100%);
+            }
+
+            .payment-method-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            }
+
+            .mb-card:hover {
+                border-color: rgba(34, 197, 94, 0.3);
+            }
+
+            .payment-method-content {
+                position: relative;
+                z-index: 2;
+            }
+
+            .payment-method-icon {
+                width: 50px;
+                height: 50px;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                font-size: 1.5rem;
+                color: white;
+                margin-bottom: 1rem;
+            }
+
+            .mb-card .payment-method-icon {
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+            }
+
+            .payment-method-info h4 {
+                color: white;
+                font-size: 1.3rem;
+                font-weight: 700;
+                margin: 0 0 1rem 0;
+            }
+
+            .account-info {
+                background: rgba(255, 255, 255, 0.05);
+                border-radius: 12px;
+                padding: 1rem;
+            }
+
+            .account-row {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 0.5rem 0;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            }
+
+            .account-row:last-child {
+                border-bottom: none;
+            }
+
+            .account-label {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.9rem;
+                font-weight: 500;
+            }
+
+            .account-value {
+                color: white;
+                font-weight: 600;
+                font-size: 1rem;
+                margin: 0 0.5rem;
+            }
+
+            .copy-btn {
+                background: rgba(139, 92, 246, 0.2);
+                border: 1px solid rgba(139, 92, 246, 0.3);
+                color: #8b5cf6;
+                padding: 0.3rem 0.6rem;
+                border-radius: 6px;
+                font-size: 0.8rem;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-weight: 600;
+                min-width: 60px;
+            }
+
+            .copy-btn:hover {
+                background: rgba(139, 92, 246, 0.3);
+                transform: translateY(-1px);
+            }
+
+            .copy-btn.copied {
+                background: rgba(34, 197, 94, 0.2);
+                border-color: rgba(34, 197, 94, 0.3);
+                color: #22c55e;
+            }
+
+            .copy-notification {
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+                color: white;
+                padding: 1rem 1.5rem;
+                border-radius: 10px;
+                font-weight: 600;
+                z-index: 9999;
+                transform: translateX(100%);
+                transition: transform 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+            }
+
+            .copy-notification.show {
+                transform: translateX(0);
+            }
+
+            @media (max-width: 768px) {
+                .payment-methods-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                }
+
+                .payment-method-card {
+                    padding: 1rem;
+                }
+
+                .account-row {
+                    flex-direction: column;
+                    align-items: flex-start;
+                    gap: 0.5rem;
+                }
+
+                .account-value {
+                    margin: 0;
+                }
+            }
+
+            /* QR Button Styles */
+            .qr-action {
+                margin-top: 1rem;
+                text-align: center;
+            }
+
+            .qr-btn {
+                background: linear-gradient(135deg, #22c55e, #16a34a);
+                color: white;
+                border: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                margin: 0 auto;
+                box-shadow: 0 4px 15px rgba(34, 197, 94, 0.3);
+            }
+
+            .qr-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(34, 197, 94, 0.4);
+                background: linear-gradient(135deg, #16a34a, #15803d);
+            }
+
+            .qr-btn:active {
+                transform: translateY(0);
+            }
+
+            /* QR Modal Styles */
+            .qr-modal {
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                z-index: 999999;
+                display: none;
+                align-items: center;
+                justify-content: center;
+                font-family: 'Be Vietnam Pro', sans-serif;
+            }
+
+            .qr-modal.show {
+                display: flex;
+            }
+
+            .qr-modal-overlay {
+                position: absolute;
+                top: 0;
+                left: 0;
+                width: 100%;
+                height: 100%;
+                background: rgba(0, 0, 0, 0.8);
+                backdrop-filter: blur(10px);
+                -webkit-backdrop-filter: blur(10px);
+            }
+
+            .qr-modal-content {
+                position: relative;
+                background: linear-gradient(135deg,
+                        rgba(255, 255, 255, 0.1) 0%,
+                        rgba(255, 255, 255, 0.05) 100%);
+                border: 2px solid rgba(34, 197, 94, 0.3);
+                border-radius: 20px;
+                padding: 2rem;
+                max-width: 400px;
+                width: 90%;
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                box-shadow:
+                    0 25px 50px rgba(0, 0, 0, 0.5),
+                    0 0 0 1px rgba(255, 255, 255, 0.1) inset;
+                animation: modalSlideIn 0.3s ease-out;
+            }
+
+            @keyframes modalSlideIn {
+                0% {
+                    opacity: 0;
+                    transform: scale(0.8) translateY(-20px);
+                }
+
+                100% {
+                    opacity: 1;
+                    transform: scale(1) translateY(0);
+                }
+            }
+
+            .qr-modal-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                margin-bottom: 1.5rem;
+                border-bottom: 1px solid rgba(34, 197, 94, 0.3);
+                padding-bottom: 1rem;
+            }
+
+            .qr-modal-header h3 {
+                color: white;
+                font-size: 1.5rem;
+                font-weight: 700;
+                margin: 0;
+            }
+
+            .qr-modal-close {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                width: 35px;
+                height: 35px;
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                font-size: 1rem;
+            }
+
+            .qr-modal-close:hover {
+                background: rgba(255, 107, 107, 0.2);
+                border-color: rgba(255, 107, 107, 0.3);
+                transform: scale(1.1);
+            }
+
+            .qr-display {
+                text-align: center;
+                margin-bottom: 1.5rem;
+            }
+
+            .qr-display img {
+                width: 200px;
+                height: 200px;
+                border-radius: 15px;
+                box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+                margin-bottom: 1rem;
+            }
+
+            .qr-info {
+                color: white;
+                font-size: 0.95rem;
+            }
+
+            .qr-info p {
+                margin: 0.3rem 0;
+            }
+
+            .qr-info strong {
+                color: #22c55e;
+            }
+
+            .qr-actions {
+                display: flex;
+                gap: 1rem;
+                justify-content: center;
+            }
+
+            .qr-action-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                padding: 0.8rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.9rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                min-width: 120px;
+                justify-content: center;
+            }
+
+            .qr-action-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+            }
+
+            .qr-action-btn.use-btn:hover {
+                background: rgba(34, 197, 94, 0.2);
+                border-color: rgba(34, 197, 94, 0.3);
+            }
+
+            .qr-action-btn.copy-btn:hover {
+                background: rgba(139, 92, 246, 0.2);
+                border-color: rgba(139, 92, 246, 0.3);
+            }
+
+            @media (max-width: 768px) {
+                .qr-modal-content {
+                    width: 95%;
+                    padding: 1.5rem;
+                }
+
+                .qr-display img {
+                    width: 150px;
+                    height: 150px;
+                }
+
+                .qr-actions {
+                    flex-direction: column;
+                    gap: 0.8rem;
+                }
+
+                .qr-action-btn {
+                    min-width: auto;
+                }
+            }
+
+            /* Social Media Services Section Styles */
+            .social-media {
+                padding: 5rem 0;
+                background: linear-gradient(135deg,
+                        rgba(139, 92, 246, 0.05) 0%,
+                        rgba(124, 58, 237, 0.03) 100%);
+            }
+
+            .section-subtitle {
+                text-align: center;
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 1.1rem;
+                margin-bottom: 3rem;
+                max-width: 600px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .social-products-container {
+                position: relative;
+                overflow: hidden;
+            }
+
+            .social-products-grid {
+                position: relative;
+                min-height: 800px;
+            }
+
+            .social-page {
+                display: none;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                animation: fadeIn 0.5s ease-in-out;
+            }
+
+            .social-page.active {
+                display: grid;
+            }
+
+            @keyframes fadeIn {
+                from {
+                    opacity: 0;
+                    transform: translateY(20px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            .social-product-card {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 255, 255, 0.1);
+                border-radius: 20px;
+                padding: 1.5rem;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .social-product-card::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg,
+                        rgba(139, 92, 246, 0.1) 0%,
+                        rgba(124, 58, 237, 0.05) 100%);
+                border-radius: 20px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                pointer-events: none;
+            }
+
+            .social-product-card:hover::before {
+                opacity: 1;
+            }
+
+            .social-product-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+                border-color: rgba(139, 92, 246, 0.3);
+            }
+
+            .social-product-image {
+                position: relative;
+                width: 100%;
+                height: 200px;
+                border-radius: 15px;
+                overflow: hidden;
+                margin-bottom: 1rem;
+                background: rgba(255, 255, 255, 0.05);
+            }
+
+            .social-product-image img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                transition: transform 0.3s ease;
+            }
+
+            .social-product-card:hover .social-product-image img {
+                transform: scale(1.05);
+            }
+
+            .social-product-content {
+                position: relative;
+                z-index: 2;
+                flex: 1;
+                display: flex;
+                flex-direction: column;
+            }
+
+            .social-product-content h3 {
+                color: white;
+                font-size: 1.2rem;
+                font-weight: 700;
+                margin: 0 0 0.8rem 0;
+                line-height: 1.3;
+            }
+
+            .social-product-desc {
+                color: rgba(255, 255, 255, 0.7);
+                font-size: 0.9rem;
+                line-height: 1.5;
+                margin: 0 0 1rem 0;
+                flex: 1;
+            }
+
+            .social-price {
+                color: #8b5cf6;
+                font-size: 1.1rem;
+                font-weight: 700;
+                margin: 0 0 1.5rem 0;
+                text-align: center;
+                background: rgba(139, 92, 246, 0.1);
+                padding: 0.5rem;
+                border-radius: 10px;
+                border: 1px solid rgba(139, 92, 246, 0.2);
+            }
+
+            .social-buy-btn {
+                background: linear-gradient(135deg, #8b5cf6, #7c3aed);
+                color: white;
+                text-decoration: none;
+                padding: 0.8rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                text-align: center;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 0.5rem;
+                box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
+                border: none;
+                cursor: pointer;
+            }
+
+            .social-buy-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 25px rgba(139, 92, 246, 0.4);
+                background: linear-gradient(135deg, #7c3aed, #6d28d9);
+                color: white;
+                text-decoration: none;
+            }
+
+            .social-buy-btn:active {
+                transform: translateY(0);
+            }
+
+            /* Pagination Styles */
+            .social-pagination {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                gap: 2rem;
+                margin-top: 3rem;
+                padding: 1rem 0;
+            }
+
+            .pagination-btn {
+                background: rgba(255, 255, 255, 0.1);
+                border: 1px solid rgba(255, 255, 255, 0.2);
+                color: white;
+                padding: 0.8rem 1.5rem;
+                border-radius: 25px;
+                font-size: 0.95rem;
+                font-weight: 600;
+                cursor: pointer;
+                transition: all 0.3s ease;
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+                font-family: 'Be Vietnam Pro', sans-serif;
+            }
+
+            .pagination-btn:hover:not(:disabled) {
+                background: rgba(139, 92, 246, 0.2);
+                border-color: rgba(139, 92, 246, 0.3);
+                transform: translateY(-2px);
+            }
+
+            .pagination-btn:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+            .pagination-indicators {
+                display: flex;
+                gap: 0.5rem;
+                align-items: center;
+            }
+
+            .pagination-dot {
+                width: 12px;
+                height: 12px;
+                border-radius: 50%;
+                background: rgba(255, 255, 255, 0.3);
+                cursor: pointer;
+                transition: all 0.3s ease;
+            }
+
+            .pagination-dot.active {
+                background: #8b5cf6;
+                transform: scale(1.2);
+            }
+
+            .pagination-dot:hover {
+                background: rgba(139, 92, 246, 0.6);
+            }
+
+            /* Mobile Responsive */
+            @media (max-width: 1024px) {
+                .social-page {
+                    grid-template-columns: repeat(2, 1fr);
+                    gap: 1.5rem;
+                }
+            }
+
+            @media (max-width: 768px) {
+                .social-media {
+                    padding: 3rem 0;
+                }
+
+                .section-subtitle {
+                    font-size: 1rem;
+                    margin-bottom: 2rem;
+                    padding: 0 1rem;
+                }
+
+                .social-page {
+                    grid-template-columns: 1fr;
+                    gap: 1rem;
+                }
+
+                .social-product-card {
+                    padding: 1rem;
+                }
+
+                .social-product-image {
+                    height: 160px;
+                }
+
+                .social-product-content h3 {
+                    font-size: 1.1rem;
+                }
+
+                .social-product-desc {
+                    font-size: 0.85rem;
+                }
+
+                .social-price {
+                    font-size: 1rem;
+                }
+
+                .social-buy-btn {
+                    padding: 0.7rem 1.2rem;
+                    font-size: 0.9rem;
+                }
+
+                .social-pagination {
+                    gap: 1rem;
+                    margin-top: 2rem;
+                }
+
+                .pagination-btn {
+                    padding: 0.6rem 1rem;
+                    font-size: 0.9rem;
+                }
+            }
+
+            @media (max-width: 480px) {
+                .social-pagination {
+                    flex-direction: column;
+                    gap: 1rem;
+                }
+
+                .pagination-indicators {
+                    order: -1;
+                }
+            }
+
+            /* Premium Button Styles */
+            .premium-nav-btn {
+                background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+                color: #1a1a2e !important;
+                font-weight: 700 !important;
+                position: relative !important;
+                overflow: hidden !important;
+                animation: premiumPulse 2s infinite !important;
+                box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4) !important;
+            }
+
+            .premium-nav-btn:hover {
+                transform: translateY(-2px) !important;
+                box-shadow: 0 8px 30px rgba(255, 215, 0, 0.6) !important;
+                color: #1a1a2e !important;
+            }
+
+            .premium-badge {
+                background: linear-gradient(135deg, #ff4757, #ff3742);
+                color: white;
+                font-size: 0.7rem;
+                font-weight: 800;
+                padding: 0.2rem 0.5rem;
+                border-radius: 10px;
+                margin-left: 0.5rem;
+                animation: badgePulse 1.5s infinite;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            @keyframes premiumPulse {
+
+                0%,
+                100% {
+                    box-shadow: 0 4px 20px rgba(255, 215, 0, 0.4);
+                }
+
+                50% {
+                    box-shadow: 0 4px 25px rgba(255, 215, 0, 0.6);
+                }
+            }
+
+            @keyframes badgePulse {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            /* Premium Hero Button */
+            .btn-premium {
+                background: linear-gradient(135deg, #ffd700, #ffed4e) !important;
+                color: #1a1a2e !important;
+                font-weight: 700 !important;
+                position: relative !important;
+                overflow: hidden !important;
+                animation: premiumGlow 3s infinite !important;
+                box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5) !important;
+            }
+
+            .btn-premium:hover {
+                transform: translateY(-3px) !important;
+                box-shadow: 0 10px 35px rgba(255, 215, 0, 0.7) !important;
+                color: #1a1a2e !important;
+            }
+
+            .premium-sparkle {
+                position: absolute;
+                top: -5px;
+                right: -5px;
+                font-size: 1.2rem;
+                animation: sparkle 2s infinite;
+            }
+
+            @keyframes premiumGlow {
+
+                0%,
+                100% {
+                    box-shadow: 0 6px 25px rgba(255, 215, 0, 0.5);
+                    transform: scale(1);
+                }
+
+                50% {
+                    box-shadow: 0 6px 30px rgba(255, 215, 0, 0.7);
+                    transform: scale(1.02);
+                }
+            }
+
+            @keyframes sparkle {
+
+                0%,
+                100% {
+                    transform: rotate(0deg) scale(1);
+                    opacity: 1;
+                }
+
+                50% {
+                    transform: rotate(180deg) scale(1.2);
+                    opacity: 0.8;
+                }
+            }
+
+            /* Premium Highlight in Hero */
+            .premium-highlight {
+                background: linear-gradient(135deg, rgba(255, 215, 0, 0.2), rgba(255, 237, 78, 0.1));
+                border: 2px solid rgba(255, 215, 0, 0.3);
+                border-radius: 15px;
+                padding: 1rem;
+                margin-top: 1rem;
+                display: inline-block;
+                color: #ffd700;
+                font-weight: 600;
+                animation: highlightGlow 4s infinite;
+            }
+
+            @keyframes highlightGlow {
+
+                0%,
+                100% {
+                    border-color: rgba(255, 215, 0, 0.3);
+                    box-shadow: 0 0 20px rgba(255, 215, 0, 0.2);
+                }
+
+                50% {
+                    border-color: rgba(255, 215, 0, 0.5);
+                    box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+                }
+            }
+
+            /* Premium Account Section */
+            .premium-account-section {
+                padding: 6rem 0;
+                background: linear-gradient(135deg,
+                        rgba(255, 215, 0, 0.1) 0%,
+                        rgba(255, 237, 78, 0.05) 50%,
+                        rgba(139, 92, 246, 0.05) 100%);
+                position: relative;
+                overflow: hidden;
+            }
+
+            .premium-account-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grain" width="100" height="100" patternUnits="userSpaceOnUse"><circle cx="50" cy="50" r="1" fill="%23ffd700" opacity="0.1"/></pattern></defs><rect width="100" height="100" fill="url(%23grain)"/></svg>');
+                opacity: 0.3;
+                pointer-events: none;
+            }
+
+            .premium-content {
+                text-align: center;
+                position: relative;
+                z-index: 2;
+            }
+
+            .premium-badge-large {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.5rem;
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #1a1a2e;
+                padding: 0.8rem 2rem;
+                border-radius: 50px;
+                font-weight: 800;
+                font-size: 1.1rem;
+                margin-bottom: 2rem;
+                animation: premiumBadgeFloat 3s infinite;
+                box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+            }
+
+            @keyframes premiumBadgeFloat {
+
+                0%,
+                100% {
+                    transform: translateY(0px);
+                }
+
+                50% {
+                    transform: translateY(-5px);
+                }
+            }
+
+            .premium-title {
+                font-size: 3rem;
+                font-weight: 800;
+                background: linear-gradient(135deg, #ffd700, #ffed4e, #8b5cf6);
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+                background-clip: text;
+                margin-bottom: 1rem;
+                text-shadow: 0 4px 20px rgba(255, 215, 0, 0.3);
+            }
+
+            .premium-subtitle {
+                font-size: 1.3rem;
+                color: rgba(255, 255, 255, 0.8);
+                margin-bottom: 3rem;
+                max-width: 800px;
+                margin-left: auto;
+                margin-right: auto;
+                line-height: 1.6;
+            }
+
+            .premium-features-grid {
+                display: grid;
+                grid-template-columns: repeat(3, 1fr);
+                gap: 2rem;
+                margin-bottom: 3rem;
+            }
+
+            .premium-feature {
+                background: rgba(255, 255, 255, 0.05);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+                border: 1px solid rgba(255, 215, 0, 0.2);
+                border-radius: 20px;
+                padding: 2rem;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+            }
+
+            .premium-feature::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: linear-gradient(135deg,
+                        rgba(255, 215, 0, 0.1) 0%,
+                        rgba(255, 237, 78, 0.05) 100%);
+                border-radius: 20px;
+                opacity: 0;
+                transition: opacity 0.3s ease;
+                pointer-events: none;
+            }
+
+            .premium-feature:hover::before {
+                opacity: 1;
+            }
+
+            .premium-feature:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 20px 40px rgba(255, 215, 0, 0.2);
+                border-color: rgba(255, 215, 0, 0.4);
+            }
+
+            .premium-feature-icon {
+                width: 80px;
+                height: 80px;
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                border-radius: 50%;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin: 0 auto 1.5rem;
+                font-size: 2rem;
+                color: #1a1a2e;
+                animation: iconFloat 2s infinite;
+            }
+
+            @keyframes iconFloat {
+
+                0%,
+                100% {
+                    transform: translateY(0px) rotate(0deg);
+                }
+
+                50% {
+                    transform: translateY(-5px) rotate(5deg);
+                }
+            }
+
+            .premium-feature h3 {
+                color: white;
+                font-size: 1.4rem;
+                font-weight: 700;
+                margin-bottom: 1rem;
+            }
+
+            .premium-feature p {
+                color: rgba(255, 255, 255, 0.7);
+                line-height: 1.6;
+                margin: 0;
+            }
+
+            .premium-cta {
+                text-align: center;
+            }
+
+            .premium-cta-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 1rem;
+                background: linear-gradient(135deg, #ffd700, #ffed4e);
+                color: #1a1a2e;
+                text-decoration: none;
+                padding: 1.2rem 3rem;
+                border-radius: 50px;
+                font-size: 1.2rem;
+                font-weight: 800;
+                transition: all 0.3s ease;
+                position: relative;
+                overflow: hidden;
+                animation: ctaPulse 2s infinite;
+                box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+            }
+
+            .premium-cta-btn:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 15px 40px rgba(255, 215, 0, 0.6);
+                color: #1a1a2e;
+                text-decoration: none;
+            }
+
+            .premium-cta-badge {
+                background: linear-gradient(135deg, #ff4757, #ff3742);
+                color: white;
+                font-size: 0.8rem;
+                font-weight: 800;
+                padding: 0.3rem 0.8rem;
+                border-radius: 15px;
+                animation: badgeBounce 1s infinite;
+                text-transform: uppercase;
+            }
+
+            @keyframes ctaPulse {
+
+                0%,
+                100% {
+                    box-shadow: 0 8px 30px rgba(255, 215, 0, 0.4);
+                    transform: scale(1);
+                }
+
+                50% {
+                    box-shadow: 0 8px 35px rgba(255, 215, 0, 0.6);
+                    transform: scale(1.02);
+                }
+            }
+
+            @keyframes badgeBounce {
+
+                0%,
+                100% {
+                    transform: scale(1);
+                }
+
+                50% {
+                    transform: scale(1.1);
+                }
+            }
+
+            .premium-cta-note {
+                color: rgba(255, 255, 255, 0.6);
+                font-size: 0.9rem;
+                margin-top: 1rem;
+                font-style: italic;
+            }
+
+            /* Mobile Responsive for Premium */
+            @media (max-width: 768px) {
+                .premium-title {
+                    font-size: 2rem;
+                }
+
+                .premium-subtitle {
+                    font-size: 1.1rem;
+                    padding: 0 1rem;
+                }
+
+                .premium-features-grid {
+                    grid-template-columns: 1fr;
+                    gap: 1.5rem;
+                }
+
+                .premium-feature {
+                    padding: 1.5rem;
+                }
+
+                .premium-feature-icon {
+                    width: 60px;
+                    height: 60px;
+                    font-size: 1.5rem;
+                }
+
+                .premium-cta-btn {
+                    padding: 1rem 2rem;
+                    font-size: 1.1rem;
+                }
+
+                .premium-badge-large {
+                    padding: 0.6rem 1.5rem;
+                    font-size: 1rem;
+                }
+            }
+        </style>
+
+        <!-- Social Media Pagination Script -->
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const prevBtn = document.getElementById('socialPrevBtn');
+                const nextBtn = document.getElementById('socialNextBtn');
+                const pages = document.querySelectorAll('.social-page');
+                const dots = document.querySelectorAll('.pagination-dot');
+
+                let currentPage = 1;
+                const totalPages = pages.length;
+
+                function updatePagination() {
+                    // Update page visibility
+                    pages.forEach((page, index) => {
+                        if (index + 1 === currentPage) {
+                            page.classList.add('active');
+                        } else {
+                            page.classList.remove('active');
+                        }
+                    });
+
+                    // Update dots
+                    dots.forEach((dot, index) => {
+                        if (index + 1 === currentPage) {
+                            dot.classList.add('active');
+                        } else {
+                            dot.classList.remove('active');
+                        }
+                    });
+
+                    // Update button states
+                    if (prevBtn) prevBtn.disabled = currentPage === 1;
+                    if (nextBtn) nextBtn.disabled = currentPage === totalPages;
+                }
+
+                // Previous button
+                if (prevBtn) {
+                    prevBtn.addEventListener('click', function () {
+                        if (currentPage > 1) {
+                            currentPage--;
+                            updatePagination();
+                        }
+                    });
+                }
+
+                // Next button
+                if (nextBtn) {
+                    nextBtn.addEventListener('click', function () {
+                        if (currentPage < totalPages) {
+                            currentPage++;
+                            updatePagination();
+                        }
+                    });
+                }
+
+                // Dot navigation
+                dots.forEach((dot, index) => {
+                    dot.addEventListener('click', function () {
+                        currentPage = index + 1;
+                        updatePagination();
+                    });
+                });
+
+                // Initialize
+                updatePagination();
+            });
+        </script>
+
+        <!-- Firebase Authentication Script -->
+        <script>
+            // Firebase Configuration
+            const firebaseConfig = {
+                databaseURL: "https://freefiretools-a5470-default-rtdb.asia-southeast1.firebasedatabase.app"
+            };
+
+            // Initialize Firebase
+            firebase.initializeApp(firebaseConfig);
+            const database = firebase.database();
+
+            // Auth Elements
+            const logoutBtn = document.getElementById('logoutBtn');
+            const authButtons = document.getElementById('authButtons');
+            const userInfo = document.getElementById('userInfo');
+            const userEmail = document.getElementById('userEmail');
+            const userBadge = document.getElementById('userBadge');
+            const pleaseLoginModal = document.getElementById('pleaseLoginModal');
+            const pleaseLoginBtn = document.getElementById('pleaseLoginBtn');
+
+            let currentUser = null;
+
+            // Check if user is logged in from API
+            async function checkLoggedInUser() {
+                try {
+                    const response = await fetch('/api/check_auth');
+                    const data = await response.json();
+
+                    if (data.authenticated) {
+                        const user = data.user || {};
+                        currentUser = {
+                            email: data.email || user.email || '',
+                            username: data.username || user.username || ''
+                        };
+                        updateUIForLoggedInUser(data);
+                    } else {
+                        updateUIForLoggedOutUser();
+                    }
+                } catch (error) {
+                    updateUIForLoggedOutUser();
+                }
+            }
+
+            // Update UI for logged in user
+            function updateUIForLoggedInUser(data) {
+                authButtons.style.display = 'none';
+                userInfo.classList.add('active');
+                const user = data.user || {};
+                const usage = data.usage || {};
+                userEmail.textContent = data.email || user.email || user.username || '';
+
+                // Check if user is PRO from usage/user data
+                if (Boolean(usage.is_pro || user.is_pro)) {
+                    userBadge.textContent = 'PRO';
+                    userBadge.classList.remove('free');
+                    userBadge.classList.add('pro');
+                } else {
+                    userBadge.textContent = 'Free';
+                    userBadge.classList.remove('pro');
+                    userBadge.classList.add('free');
+                }
+            }
+
+            // Update UI for logged out user
+            function updateUIForLoggedOutUser() {
+                authButtons.style.display = 'flex';
+                userInfo.classList.remove('active');
+                currentUser = null;
+            }
+
+            // Please Login Modal - redirect to /auth with redirect parameter
+            pleaseLoginBtn.addEventListener('click', () => {
+                pleaseLoginModal.classList.remove('active');
+                // Get the original target from the button that triggered the modal
+                const targetUrl = pleaseLoginBtn.dataset.redirectTarget || '/tools';
+                window.location.href = `/auth?redirect=${encodeURIComponent(targetUrl)}`;
+            });
+
+            pleaseLoginModal.addEventListener('click', (e) => {
+                if (e.target === pleaseLoginModal.querySelector('.auth-overlay')) {
+                    pleaseLoginModal.classList.remove('active');
+                }
+            });
+
+            // Auth check for service buttons
+            document.querySelectorAll('[data-require-auth="true"]').forEach(btn => {
+                btn.addEventListener('click', async (e) => {
+                    e.preventDefault();
+                    const targetUrl = btn.getAttribute('href');
+
+                    // Check authentication status
+                    try {
+                        const response = await fetch('/api/check_auth');
+                        const data = await response.json();
+
+                        if (data.authenticated) {
+                            // If logged in, go to target
+                            window.location.href = targetUrl;
+                        } else {
+                            // If not logged in, show modal
+                            pleaseLoginBtn.dataset.redirectTarget = targetUrl;
+                            pleaseLoginModal.classList.add('active');
+                        }
+                    } catch (error) {
+                        // On error, show modal as fallback
+                        pleaseLoginBtn.dataset.redirectTarget = targetUrl;
+                        pleaseLoginModal.classList.add('active');
+                    }
+                });
+            });
+
+            // Logout functionality
+            logoutBtn.addEventListener('click', async () => {
+                try {
+                    await fetch('/api/logout', {
+                        method: 'POST'
+                    });
+                    updateUIForLoggedOutUser();
+                    // Redirect to home
+                    window.location.href = '/';
+                } catch (error) {
+                    console.error('Logout error:', error);
+                    updateUIForLoggedOutUser();
+                    window.location.href = '/';
+                }
+            });
+
+            // Check auth on page load
+            checkLoggedInUser();
+        </script>
+
+</body>
+
+</html>

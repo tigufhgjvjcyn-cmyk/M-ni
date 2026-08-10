@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập | CHECKMXTFF</title>
+    <link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:ital,wght@0,400;0,500;0,600;0,700;0,800;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --primary:       #7394EC;
+            --primary-dk:    #5a7ad4;
+            --secondary:     #8ba6f0;
+            --accent:        #7394EC;
+            --bg:            #0b0f14;
+            --bg-left:       #0d1018;
+            --card-bg:       rgba(11, 13, 22, 0.90);
+            --card-border:   rgba(139, 92, 246, 0.14);
+            --input-bg:      rgba(8, 11, 20, 0.75);
+            --input-border:  rgba(255, 255, 255, 0.08);
+            --input-focus:   rgba(139, 92, 246, 0.5);
+            --text:          #f1f5f9;
+            --muted:         #8c98aa;
+            --muted-dim:     #53606e;
+            --grad:          linear-gradient(135deg, #7394EC 0%, #5a7ad4 100%);
+            --grad-btn:      linear-gradient(135deg, #9333ea 0%, #6d28d9 100%);
+            --error-color:   #f87171;
+            --success-color: #4ade80;
+        }
+
+        html { scroll-behavior: smooth; }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            overflow-x: hidden;
+            line-height: 1.6;
+        }
+
+        /* ════════════════════════════
+           LAYOUT
+        ════════════════════════════ */
+        .auth-layout {
+            display: grid;
+            grid-template-columns: 57fr 43fr;
+            min-height: 100vh;
+        }
+
+        /* ════════════════════════════
+           LEFT PANEL
+        ════════════════════════════ */
+        .auth-left {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 3rem 2.5rem 3rem 3rem;
+            background: var(--bg-left);
+            overflow: hidden;
+        }
+
+        /* ambient glows */
+        .auth-left .blob-1,
+        .auth-left .blob-2 {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            pointer-events: none;
+            z-index: 0;
+        }
+        .auth-left .blob-1 {
+            width: 55%;
+            height: 55%;
+            top: -8%;
+            left: -10%;
+            background: radial-gradient(circle, rgba(139, 92, 246, 0.22) 0%, transparent 70%);
+        }
+        .auth-left .blob-2 {
+            width: 50%;
+            height: 50%;
+            bottom: -8%;
+            right: -10%;
+            background: radial-gradient(circle, rgba(192, 132, 252, 0.15) 0%, transparent 70%);
+        }
+
+        /* dot-grid */
+        .auth-left .grid-overlay {
+            position: absolute;
+            inset: 0;
+            background-image:
+                radial-gradient(circle, rgba(139, 92, 246, 0.2) 1px, transparent 1px);
+            background-size: 36px 36px;
+            opacity: 0.35;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* thin vertical separator */
+        .auth-left::after {
+            content: '';
+            position: absolute;
+            right: 0; top: 15%; bottom: 15%;
+            width: 1px;
+            background: linear-gradient(180deg,
+                transparent 0%,
+                rgba(139, 92, 246, 0.22) 30%,
+                rgba(139, 92, 246, 0.22) 70%,
+                transparent 100%);
+        }
+
+        .left-inner {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2.25rem;
+            width: 100%;
+            max-width: 500px;
+        }
+
+        /* brand */
+        .left-brand {
+            align-self: flex-start;
+            display: flex;
+            align-items: center;
+            gap: 0.65rem;
+            text-decoration: none;
+        }
+        .brand-icon {
+            width: 38px; height: 38px;
+            background: var(--grad);
+            border-radius: 10px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; color: #fff;
+            box-shadow: 0 4px 18px rgba(139, 92, 246, 0.32);
+            flex-shrink: 0;
+        }
+        .brand-text {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--text);
+        }
+        .brand-text span { color: var(--secondary); }
+
+        /* illustration */
+        .illus-wrap {
+            width: 100%;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .illus-img {
+            width: 82%;
+            max-width: 440px;
+            height: auto;
+            object-fit: contain;
+            filter: drop-shadow(0 24px 50px rgba(139, 92, 246, 0.28));
+            animation: illus-float 5.5s ease-in-out infinite;
+        }
+        @keyframes illus-float {
+            0%, 100% { transform: translateY(0px); }
+            50%       { transform: translateY(-14px); }
+        }
+
+        /* tagline */
+        .left-tagline { text-align: center; }
+        .left-tagline h2 {
+            font-size: 1.4rem;
+            font-weight: 800;
+            letter-spacing: -0.025em;
+            line-height: 1.3;
+            background: var(--grad);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 0.45rem;
+        }
+        .left-tagline p {
+            font-size: 0.88rem;
+            color: var(--muted);
+        }
+
+        /* badges */
+        .left-badges {
+            display: flex;
+            gap: 0.65rem;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        .badge-pill {
+            display: flex; align-items: center; gap: 0.38rem;
+            padding: 0.32rem 0.85rem;
+            border-radius: 100px;
+            background: rgba(139, 92, 246, 0.09);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            font-size: 0.77rem;
+            font-weight: 500;
+            color: var(--muted);
+        }
+        .badge-pill i { font-size: 0.68rem; color: var(--secondary); }
+
+        /* ════════════════════════════
+           RIGHT PANEL
+        ════════════════════════════ */
+        .auth-right {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem 2rem 2rem 2.5rem;
+            background: var(--bg);
+        }
+
+        /* ════════════════════════════
+           AUTH CARD
+        ════════════════════════════ */
+        .auth-card {
+            width: 100%;
+            max-width: 420px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 22px;
+            padding: 2.5rem 2.25rem 2rem;
+            backdrop-filter: blur(24px);
+            -webkit-backdrop-filter: blur(24px);
+            box-shadow:
+                0 28px 70px rgba(0, 0, 0, 0.4),
+                0 0 0 1px rgba(255, 255, 255, 0.04),
+                inset 0 1px 0 rgba(255, 255, 255, 0.07);
+            animation: card-enter 0.45s cubic-bezier(0.22, 1, 0.36, 1) both;
+        }
+        @keyframes card-enter {
+            from { opacity: 0; transform: translateY(22px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* card top logo */
+        .card-logo {
+            display: flex; align-items: center; gap: 0.6rem;
+            justify-content: center;
+            margin-bottom: 1.8rem;
+        }
+        .card-logo .logo-icon {
+            width: 42px; height: 42px;
+            background: var(--grad);
+            border-radius: 12px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 1.1rem; color: #fff;
+            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.38);
+        }
+        .card-logo .logo-label {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+        .card-logo .logo-label span { color: var(--secondary); }
+
+        /* title */
+        .card-heading { text-align: center; margin-bottom: 1.75rem; }
+        .card-heading h1 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.03em;
+            margin-bottom: 0.3rem;
+        }
+        .card-heading p {
+            font-size: 0.86rem;
+            color: var(--muted);
+        }
+
+        /* ─── Fields ─── */
+        .field-group { margin-bottom: 1.1rem; }
+
+        .field-group label {
+            display: block;
+            font-size: 0.82rem;
+            font-weight: 600;
+            color: var(--text);
+            margin-bottom: 0.44rem;
+            letter-spacing: 0.005em;
+        }
+
+        .input-box {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .input-box input {
+            width: 100%;
+            padding: 0.8rem 1rem;
+            background: var(--input-bg);
+            border: 1.5px solid var(--input-border);
+            border-radius: 11px;
+            color: var(--text);
+            font-family: inherit;
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+            -webkit-appearance: none;
+        }
+        .input-box.has-eye input { padding-right: 2.8rem; }
+        .input-box input::placeholder { color: var(--muted-dim); font-size: 0.86rem; }
+        .input-box input:hover  { border-color: rgba(139, 92, 246, 0.3); }
+        .input-box input:focus  {
+            border-color: var(--input-focus);
+            background: rgba(8, 11, 20, 0.92);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.13);
+        }
+        .input-box input.is-err {
+            border-color: var(--error-color);
+            box-shadow: 0 0 0 3px rgba(248, 113, 113, 0.12);
+        }
+
+        /* eye toggle */
+        .eye-btn {
+            position: absolute;
+            right: 0.8rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--muted);
+            padding: 0.25rem;
+            font-size: 0.85rem;
+            display: flex; align-items: center;
+            transition: color 0.2s;
+            z-index: 1;
+        }
+        .eye-btn:hover { color: var(--secondary); }
+
+        /* field-level error */
+        .field-err {
+            font-size: 0.76rem;
+            color: var(--error-color);
+            margin-top: 0.3rem;
+            display: none;
+        }
+        .field-err.show { display: block; }
+
+        /* ─── Form options row ─── */
+        .form-options {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin: 0.5rem 0 1.35rem;
+        }
+        .check-label {
+            display: flex; align-items: center; gap: 0.45rem;
+            font-size: 0.82rem;
+            color: var(--muted);
+            cursor: pointer;
+            user-select: none;
+        }
+        .check-label input[type="checkbox"] {
+            width: 15px; height: 15px;
+            accent-color: var(--primary);
+            cursor: pointer;
+        }
+        .forgot-link {
+            font-size: 0.82rem;
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: opacity 0.2s;
+        }
+        .forgot-link:hover { opacity: 0.75; }
+
+        /* ─── Submit button ─── */
+        .submit-btn {
+            width: 100%;
+            height: 48px;
+            background: var(--grad-btn);
+            color: #fff;
+            font-family: inherit;
+            font-size: 0.95rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 11px;
+            cursor: pointer;
+            display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+            letter-spacing: 0.01em;
+            transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+            box-shadow: 0 6px 22px rgba(139, 92, 246, 0.32);
+            position: relative;
+            overflow: hidden;
+        }
+        .submit-btn::before {
+            content: '';
+            position: absolute; inset: 0;
+            background: linear-gradient(135deg,
+                rgba(255,255,255,0.14) 0%,
+                transparent 55%);
+            pointer-events: none;
+        }
+        .submit-btn:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(139, 92, 246, 0.42);
+        }
+        .submit-btn:active:not(:disabled) { transform: translateY(0); }
+        .submit-btn:disabled {
+            opacity: 0.58;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* spinner inside button */
+        .spin-ring {
+            width: 18px; height: 18px;
+            border: 2.5px solid rgba(255,255,255,0.3);
+            border-top-color: #fff;
+            border-radius: 50%;
+            animation: spin-anim 0.7s linear infinite;
+            display: none;
+            flex-shrink: 0;
+        }
+        .submit-btn.is-loading .spin-ring    { display: block; }
+        .submit-btn.is-loading .btn-label    { display: none; }
+        @keyframes spin-anim { to { transform: rotate(360deg); } }
+
+        /* ─── Result box ─── */
+        .result-box {
+            margin-top: 1rem;
+            padding: 0.85rem 1rem;
+            border-radius: 10px;
+            font-size: 0.83rem;
+            display: none;
+            align-items: flex-start;
+            gap: 0.55rem;
+            line-height: 1.45;
+        }
+        .result-box.show { display: flex; }
+        .result-box.ok {
+            background: rgba(74, 222, 128, 0.07);
+            border: 1px solid rgba(74, 222, 128, 0.22);
+            color: #86efac;
+        }
+        .result-box.fail {
+            background: rgba(248, 113, 113, 0.07);
+            border: 1px solid rgba(248, 113, 113, 0.22);
+            color: #fca5a5;
+        }
+        .result-box i { font-size: 0.88rem; margin-top: 0.1rem; flex-shrink: 0; }
+
+        /* ─── Card footer ─── */
+        .card-footer {
+            text-align: center;
+            margin-top: 1.5rem;
+            padding-top: 1.25rem;
+            border-top: 1px solid rgba(255,255,255,0.06);
+        }
+        .card-footer p { font-size: 0.85rem; color: var(--muted); }
+        .card-footer a {
+            color: var(--secondary);
+            text-decoration: none;
+            font-weight: 700;
+            transition: color 0.2s;
+        }
+        .card-footer a:hover { color: var(--accent); }
+
+        /* ════════════════════════════
+           RESPONSIVE
+        ════════════════════════════ */
+        @media (max-width: 900px) {
+            .auth-layout { grid-template-columns: 1fr; }
+            .auth-left   { display: none; }
+            .auth-right  {
+                padding: 2rem 1.25rem;
+                min-height: 100vh;
+            }
+            .auth-card { max-width: 100%; }
+        }
+        @media (max-width: 480px) {
+            .auth-card { padding: 2rem 1.35rem 1.75rem; border-radius: 18px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="auth-layout">
+
+    <!-- ══════════ LEFT ══════════ -->
+    <div class="auth-left">
+        <div class="blob-1"></div>
+        <div class="blob-2"></div>
+        <div class="grid-overlay"></div>
+
+        <div class="left-inner">
+
+            <a href="/" class="left-brand">
+                <div class="brand-icon"><i class="fas fa-fire"></i></div>
+                <span class="brand-text">CHECKMXTFF <span>VIP</span></span>
+            </a>
+
+            <div class="illus-wrap">
+                <img src="/static/images/auth-illustration.webp"
+                     alt="CHECKMXTFFIllustration"
+                     class="illus-img">
+            </div>
+
+            <div class="left-tagline">
+                <h2>Nền tảng công cụ<br>Kiểm tra Email Free Fire</h2>
+                <p>Đăng nhập để truy cập hệ thống quản lý chuyên nghiệp</p>
+            </div>
+
+            <div class="left-badges">
+                <div class="badge-pill"><i class="fas fa-shield-alt"></i> Bảo mật cao</div>
+                <div class="badge-pill"><i class="fas fa-bolt"></i> Tốc độ cao</div>
+                <div class="badge-pill"><i class="fas fa-headset"></i> Hỗ trợ 24/7</div>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- ══════════ RIGHT ══════════ -->
+    <div class="auth-right">
+        <div class="auth-card">
+
+            <div class="card-logo">
+                <div class="logo-icon"><i class="fas fa-fire"></i></div>
+                <span class="logo-label">CHECKMXTFF <span>VIP</span></span>
+            </div>
+
+            <div class="card-heading">
+                <h1>Chào mừng trở lại CHECKMXTFF</h1>
+                <p>Đăng nhập để sử dụng CHECKMXTFF</p>
+            </div>
+
+            <form id="loginForm" novalidate>
+
+                <div class="field-group">
+                    <label for="username">Tên đăng nhập hoặc Email</label>
+                    <div class="input-box">
+                        <input type="text" id="username" name="username"
+                               placeholder="Nhập tên đăng nhập hoặc email"
+                               autocomplete="username">
+                    </div>
+                    <div class="field-err" id="userErr">Vui lòng nhập tên đăng nhập</div>
+                </div>
+
+                <div class="field-group">
+                    <label for="password">Mật khẩu</label>
+                    <div class="input-box has-eye">
+                        <input type="password" id="password" name="password"
+                               placeholder="Nhập mật khẩu"
+                               autocomplete="current-password">
+                        <button type="button" class="eye-btn" data-target="password" aria-label="Hiện mật khẩu">
+                            <i class="fas fa-eye"></i>
+                        </button>
+                    </div>
+                    <div class="field-err" id="pwdErr">Vui lòng nhập mật khẩu</div>
+                </div>
+
+                <div class="form-options">
+                    <label class="check-label" for="remember_me">
+                        <input type="checkbox" id="remember_me" name="remember_me">
+                        Ghi nhớ đăng nhập 30 ngày
+                    </label>
+                </div>
+
+                <button type="submit" class="submit-btn" id="submitBtn">
+                    <span class="btn-label"><i class="fas fa-sign-in-alt"></i> Đăng nhập</span>
+                    <div class="spin-ring"></div>
+                </button>
+
+            </form>
+
+            <div class="result-box" id="resultBox">
+                <i id="resultIcon"></i>
+                <span id="resultMsg"></span>
+            </div>
+
+            <div class="card-footer">
+                <p>Chưa có tài khoản? <a href="/register">Đăng ký ngay</a></p>
+            </div>
+
+        </div>
+    </div>
+
+</div>
+
+<script>
+(function () {
+    /* ── Eye toggles ── */
+    document.querySelectorAll('.eye-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const inp  = document.getElementById(btn.dataset.target);
+            const icon = btn.querySelector('i');
+            if (inp.type === 'password') {
+                inp.type = 'text';
+                icon.className = 'fas fa-eye-slash';
+            } else {
+                inp.type = 'password';
+                icon.className = 'fas fa-eye';
+            }
+        });
+    });
+
+    /* ── Helpers ── */
+    const $ = id => document.getElementById(id);
+    function setErr(input, errEl, show) {
+        input.classList.toggle('is-err', show);
+        errEl.classList.toggle('show', show);
+    }
+    function showResult(type, msg) {
+        const box = $('resultBox');
+        box.className = 'result-box show ' + (type === 'ok' ? 'ok' : 'fail');
+        $('resultIcon').className = type === 'ok'
+            ? 'fas fa-circle-check'
+            : 'fas fa-circle-xmark';
+        $('resultMsg').textContent = msg;
+    }
+
+    const form      = $('loginForm');
+    const submitBtn = $('submitBtn');
+    const userInput = $('username');
+    const pwdInput  = $('password');
+
+    /* ── Live validation ── */
+    userInput.addEventListener('input', () => {
+        if (userInput.value) setErr(userInput, $('userErr'), false);
+    });
+    pwdInput.addEventListener('input', () => {
+        if (pwdInput.value) setErr(pwdInput, $('pwdErr'), false);
+    });
+
+    /* ── Submit ── */
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username    = userInput.value.trim();
+        const password    = pwdInput.value;
+        const remember_me = $('remember_me').checked;
+
+        let hasErr = false;
+        if (!username) { setErr(userInput, $('userErr'), true); hasErr = true; }
+        if (!password) { setErr(pwdInput,  $('pwdErr'),  true); hasErr = true; }
+        if (hasErr) return;
+
+        submitBtn.disabled = true;
+        submitBtn.classList.add('is-loading');
+        $('resultBox').className = 'result-box';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirect  = urlParams.get('redirect') || '/';
+
+        try {
+            const res  = await fetch('/api/login', {
+                method:  'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body:    JSON.stringify({ username, password, remember_me })
+            });
+            const data = await res.json();
+
+            if (data.success) {
+                showResult('ok', data.message || 'Đăng nhập thành công!');
+                setTimeout(() => { window.location.href = redirect; }, 1100);
+            } else {
+                showResult('fail', data.error || 'Tên đăng nhập hoặc mật khẩu không đúng.');
+            }
+        } catch {
+            showResult('fail', 'Không thể kết nối đến server. Vui lòng thử lại.');
+        } finally {
+            submitBtn.disabled = false;
+            submitBtn.classList.remove('is-loading');
+        }
+    });
+})();
+</script>
+
+</body>
+</html>

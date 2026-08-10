@@ -1,0 +1,23 @@
+Act as an expert frontend developer and UI/UX designer specializing in modern, high-end dark themes. Refactor my provided code to transform its UI/UX completely into the "Linear.app" aesthetic. 
+
+Follow these strict design tokens and guidelines:
+
+1. Color Palette:
+   - Base Background: Deep obsidian/charcoal black (e.g., #080710, #0c0c0e, or #121214). Avoid pure #000000 for the main canvas.
+   - Surface/Card Background: Semi-transparent dark grays (e.g., rgba(255, 255, 255, 0.03) or #17181c) to create layered depth.
+   - Accent/Highlight Color: A sleek, high-tech cyber blue/lavender (#7394EC) for focus states, primary buttons, and active indicators.
+   - Text Colors: Crisp off-white (#f7f8f8) for primary headings, muted gray (#8a8f98) for body text, and darker gray (#5f6368) for secondary/disabled text.
+
+2. Glassmorphism & Borders:
+   - Use ultra-thin, hairline borders: 1px solid rgba(255, 255, 255, 0.08) or rgba(255, 255, 255, 0.05) to separate sections and cards.
+   - Apply `backdrop-filter: blur(12px)` on navigation bars, dropdowns, and modals to give a glossy, premium glass feel overlaying the dark background.
+
+3. Glows & Micro-interactions:
+   - Implement subtle radial gradients or soft box-shadows on hover (e.g., a faint, elegant glow behind cards or buttons using the accent color with very low opacity like 0.15).
+   - Ensure all transitions (hover, focus, active) are smooth and fluid (e.g., transition: all 0.2s ease).
+
+4. Typography & Layout:
+   - Use a clean, modern sans-serif font stack (Inter, system-ui, or Roboto).
+   - Keep layouts perfectly aligned, utilizing clean grids and generous padding to let the elements "breathe" despite the dark canvas.
+
+Please clean up the existing CSS/styles, introduce CSS variables for these tokens, and output the refactored, production-ready code. Here is my current code:

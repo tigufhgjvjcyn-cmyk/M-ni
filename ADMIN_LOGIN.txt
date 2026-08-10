@@ -1,0 +1,9 @@
+THONG TIN DANG NHAP ADMIN
+==========================
+Username: admin
+Password: MtAdmin@2026!
+
+Web admin: /admin/login
+API admin: /api/admin/login
+
+Luu y: Day la thong tin dang nhap cua ban. Nen doi mat khau sau khi dang nhap neu project co chuc nang doi mat khau.
